@@ -1,0 +1,3 @@
+# ignore Eclipse files
+*.classpath
+*.project
