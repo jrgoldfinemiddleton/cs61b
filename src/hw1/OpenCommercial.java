@@ -1,4 +1,5 @@
 /* OpenCommercial.java */
+package hw1;
 
 import java.net.*;
 import java.io.*;
@@ -26,8 +27,24 @@ class OpenCommercial {
     System.out.print("Please enter the name of a company (without spaces): ");
     System.out.flush();        /* Make sure the line is printed immediately. */
     inputLine = keyboard.readLine();
-
-    /* Replace this comment with your solution.  */
-
+    keyboard.close();	/* Close the reader. */
+    
+    URL u = new URL("http://www." + inputLine + ".com");
+    InputStream ins = u.openStream();
+    InputStreamReader isr = new InputStreamReader(ins);
+    BufferedReader comp = new BufferedReader(isr);
+    String[] lines = new String[5];
+    
+    /* Read the first five lines and store them in an array. */
+    int i;
+    for (i = 0; i < lines.length; i++) {
+    	lines[i] = comp.readLine();
+    }
+    
+    /* Print the lines in reverse order. */
+    for (i = lines.length - 1; i >= 0; i--) {
+    	System.out.println(lines[i]);
+    }
+    comp.close();
   }
 }
