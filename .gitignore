@@ -1,3 +1,6 @@
 # ignore Eclipse files
 *.classpath
 *.project
+
+# ignore OS X Finder files
+*.DS_Store
