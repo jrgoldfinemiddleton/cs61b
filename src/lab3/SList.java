@@ -1,4 +1,5 @@
 /* SList.java */
+package lab3;
 
 /**
  *  The SList class is a singly-linked implementation of the linked list
@@ -11,6 +12,7 @@
 public class SList {
 
   private SListNode head;
+  private SListNode tail;
   private int size;
 
   /**
@@ -20,6 +22,7 @@ public class SList {
   public SList() {
     size = 0;
     head = null;
+    tail = null;
   }
 
   /**
@@ -48,6 +51,9 @@ public class SList {
   public void insertFront(Object obj) {
     head = new SListNode(obj, head);
     size++;
+    if (size == 1) {
+    	tail = head;
+    }
   }
 
   /**
@@ -57,13 +63,11 @@ public class SList {
 
   public void insertEnd(Object obj) {
     if (head == null) {
-      head = new SListNode(obj);
+    	head = new SListNode(obj);
+    	tail = head;
     } else {
-      SListNode node = head;
-      while (node.next != null) {
-        node = node.next;
-      }
-      node.next = new SListNode(obj);
+    	tail.next = new SListNode(obj);
+    	tail = tail.next;
     }
     size++;
   }
@@ -100,7 +104,6 @@ public class SList {
    **/
 
   public String toString() {
-    int i;
     Object obj;
     String result = "[  ";
 
@@ -128,6 +131,15 @@ public class SList {
     testEmpty();
     testAfterInsertFront();
     testAfterInsertEnd();
+    
+    SList l1 = new SList();
+    l1.insertFront(12);
+    l1.insertFront(9);
+    l1.insertFront(6);
+    System.out.println("\n" + l1);
+    l1.insertEnd(15);
+    l1.insertFront(3);
+    System.out.println(l1);
   }
 
     
