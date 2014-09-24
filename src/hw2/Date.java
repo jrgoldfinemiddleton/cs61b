@@ -1,10 +1,9 @@
 /* Date.java */
-
-import java.io.*;
+package hw2;
 
 class Date {
 
-  /* Put your private data fields here. */
+	int month, day, year;
 
   /** Constructs a date with the given month, day and year.   If the date is
    *  not valid, the entire program will halt with an error message.
@@ -13,7 +12,13 @@ class Date {
    *  @param year is the year in question, with no digits omitted.
    */
   public Date(int month, int day, int year) {
-
+  	if (!isValidDate(month, day, year)) {
+  		System.out.println("The date is not valid.");
+  		System.exit(0);
+  	}
+  	this.month = month;
+  	this.day = day;
+  	this.year = year;
   }
 
   /** Constructs a Date object corresponding to the given string.
@@ -23,14 +28,37 @@ class Date {
    *  a valid date, the program halts with an error message.
    */
   public Date(String s) {
-
+  	String[] date = s.split("/");
+  	if (date.length != 3) {
+  		System.out.println("The date is not of the form month/day/year.");
+  		System.exit(0);
+  	}
+  	int m = 1, d = 1, y = 1;
+  	try {
+  		m = Integer.parseInt(date[0]);
+  		d = Integer.parseInt(date[1]);
+  		y = Integer.parseInt(date[2]);
+  	} catch (NumberFormatException nfe) {
+  		System.out.println("There is something wrong with the date.");
+  		System.exit(0);
+  	}
+  	
+  	if (!isValidDate(m, d, y)) {
+  		System.out.println("The date is not valid.");
+  		System.exit(0);
+  	}
+  	this.month = m;
+  	this.day = d;
+  	this.year = y;
   }
 
   /** Checks whether the given year is a leap year.
    *  @return true if and only if the input year is a leap year.
    */
   public static boolean isLeapYear(int year) {
-    return true;                        // replace this line with your solution
+  	if (year % 400 == 0) return true;
+  	if (year % 100 == 0) return false;
+    return (year % 4 == 0);
   }
 
   /** Returns the number of days in a given month.
@@ -39,7 +67,15 @@ class Date {
    *  @return the number of days in the given month.
    */
   public static int daysInMonth(int month, int year) {
-    return 0;                           // replace this line with your solution
+  	switch (month) {
+  		case 2:
+  			if (isLeapYear(year)) return 29;
+  			return 28;
+  		case 4: case 6: case 9: case 11:
+  			return 30;
+  		default:
+  			return 31;
+  	}
   }
 
   /** Checks whether the given date is valid.
@@ -48,7 +84,9 @@ class Date {
    *  Years prior to A.D. 1 are NOT valid.
    */
   public static boolean isValidDate(int month, int day, int year) {
-    return true;                        // replace this line with your solution
+  	if (year < 1) return false;
+  	if (month < 1 || month > 12) return false;
+  	return (day > 0 && day <= daysInMonth(month, year));
   }
 
   /** Returns a string representation of this date in the form month/day/year.
@@ -57,21 +95,29 @@ class Date {
    *  @return a String representation of this date.
    */
   public String toString() {
-    return "stuff";                     // replace this line with your solution
+  	return month + "/" + day + "/" + year;
   }
 
   /** Determines whether this Date is before the Date d.
    *  @return true if and only if this Date is before d. 
    */
   public boolean isBefore(Date d) {
-    return true;                        // replace this line with your solution
+  	if (this.year > d.year) return false;
+  	if (this.year < d.year) return true; 
+  	if (this.month > d.month) return false;
+  	if (this.month < d.month) return true; 
+  	if (this.day >= d.day) return false; 
+  	return true;
   }
 
   /** Determines whether this Date is after the Date d.
    *  @return true if and only if this Date is after d. 
    */
   public boolean isAfter(Date d) {
-    return true;                        // replace this line with your solution
+  	boolean sameDate = (this.year == d.year) && (this.month == d.month) &&
+  										 (this.day == d.day);
+  	if (this.isBefore(d) || sameDate) return false;
+  	return true;
   }
 
   /** Returns the number of this Date in the year.
@@ -80,7 +126,12 @@ class Date {
    *  year.)
    */
   public int dayInYear() {
-    return 0;                           // replace this line with your solution
+  	int i, dayInYear = 0;
+  	for (i = 1; i < month; i++) {
+  		dayInYear += daysInMonth(i, year);
+  	}
+  	dayInYear += day;
+  	return dayInYear;
   }
 
   /** Determines the difference in days between d and this Date.  For example,
@@ -89,7 +140,24 @@ class Date {
    *  @return the difference in days between d and this date.
    */
   public int difference(Date d) {
-    return 0;                           // replace this line with your solution
+  	return this.standardDate() - d.standardDate();
+  }
+  
+  /** Helper method for difference() that returns the number of days since
+   * the birth of Christ given "this" date.
+   * @return the number of days since the birth of Christ.
+   */
+  private int standardDate() {
+  	int thisDate = 0;
+    for (int i = 1; i < this.year; i++) {
+    	if (isLeapYear(i)) {
+    		thisDate += 366;
+    	} else {
+    		thisDate += 365;
+    	}
+    }
+    thisDate += dayInYear();
+    return thisDate;
   }
 
   public static void main(String[] argv) {
