@@ -1,4 +1,5 @@
 /* SListNode.java */
+package hw3;
 
 /**
  *  SListNode is a class used internally by the SList class.  An SList object

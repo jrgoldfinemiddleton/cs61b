@@ -1,4 +1,5 @@
 /* TestHelper.java */
+package hw3;
 
 /**
  *  The purpose of this class is to provide a shorthand for writing and testing

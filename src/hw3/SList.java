@@ -1,4 +1,5 @@
 /* SList.java */
+package hw3;
 
 /**
  *  The SList class is a singly-linked implementation of the linked list
@@ -111,7 +112,15 @@ public class SList {
    **/
 
   public void squish() {
-    // Fill in your solution here.  (Ours is eleven lines long.)
+  	SListNode finger = head, cursor = head;
+  	while (finger != null) {
+  		cursor = finger.next;
+  		while (cursor != null && cursor.item.equals(finger.item)) {
+  			finger.next = cursor.next;
+  			cursor = cursor.next;
+  		}
+  		finger = finger.next;
+  	}
   }
 
   /**
@@ -126,7 +135,11 @@ public class SList {
    **/
 
   public void twin() {
-    // Fill in your solution here.  (Ours is seven lines long.)
+  	SListNode finger = head;
+  	while (finger != null) {
+  		finger.next = new SListNode(finger.item, finger.next);
+  		finger = finger.next.next;
+  	}
   }
 
   /**
@@ -135,7 +148,6 @@ public class SList {
    **/
 
   public String toString() {
-    int i;
     Object obj;
     String result = "[  ";
 

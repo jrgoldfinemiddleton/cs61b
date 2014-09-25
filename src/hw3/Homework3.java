@@ -1,4 +1,5 @@
 /* Homework3.java */
+package hw3;
 
 public class Homework3 {
 
@@ -19,8 +20,17 @@ public class Homework3 {
    **/
 
   public static void smoosh(int[] ints) {
-    // Fill in your solution here.  (Ours is twelve lines long, not counting
-    // blank lines or lines already present in this file.)
+  	int insert = 0, cur = 0;
+  	while (cur < ints.length) {
+  		while (cur < ints.length - 1 && ints[cur] == ints[cur + 1]) {
+  			cur++;
+  		}
+  		ints[insert] = ints[cur];
+  		insert++; cur++;
+  	}
+  	for (; insert < ints.length; insert++) {
+  		ints[insert] = -1;
+  	}
   }
 
   /**
@@ -82,6 +92,31 @@ public class Homework3 {
     System.out.println(result);
     TestHelper.verify(result.equals("[  0  1  2  3  4  5  6  ]"),
                       "BAD SMOOSH!!!  No cookie.");
+    
+    System.out.println("\nJason's test code for smoosh():");
+    int[] test37 = {};
+    System.out.println("smooshing " + stringInts(test37) + ":");
+    smoosh(test37);
+    result = stringInts(test37);
+    System.out.println(result);
+    TestHelper.verify(result.equals("[  ]"),
+                      "BAD SMOOSH!!!  No cookie.");  
+    
+    int[] test38 = {1};
+    System.out.println("smooshing " + stringInts(test38) + ":");
+    smoosh(test38);
+    result = stringInts(test38);
+    System.out.println(result);
+    TestHelper.verify(result.equals("[  1  ]"),
+                      "BAD SMOOSH!!!  No cookie.");  
+    
+    int[] test39 = {1, 1, 1};
+    System.out.println("smooshing " + stringInts(test39) + ":");
+    smoosh(test39);
+    result = stringInts(test39);
+    System.out.println(result);
+    TestHelper.verify(result.equals("[  1  -1  -1  ]"),
+                      "BAD SMOOSH!!!  No cookie.");   
 
 
     System.out.println("\nLet's squish linked lists!\n");
