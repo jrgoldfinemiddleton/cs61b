@@ -1,4 +1,5 @@
 /* DListNode1.java */
+package lab4;
 
 /**
  *  A DListNode1 is a node in a DList1 (doubly-linked list).

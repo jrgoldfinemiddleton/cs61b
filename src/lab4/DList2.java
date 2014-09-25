@@ -1,4 +1,5 @@
 /* DList2.java */
+package lab4;
 
 /**
  *  A DList2 is a mutable doubly-linked list.  Its implementation is
@@ -74,7 +75,12 @@ public class DList2 {
    *  insertFront() inserts an item at the front of a DList2.
    */
   public void insertFront(int i) {
-    // Your solution here.
+    DListNode2 front = new DListNode2(i);
+    front.next = head.next;
+    front.next.prev = front;
+    head.next = front;
+    front.prev = head;
+    size++;
   }
 
   /**
@@ -82,7 +88,11 @@ public class DList2 {
    *  a DList2.  If the list is empty, do nothing.
    */
   public void removeFront() {
-    // Your solution here.
+    if (size > 0) {
+      head.next = head.next.next;
+      head.next.prev = head;
+      size--;
+    }
   }
 
   /**

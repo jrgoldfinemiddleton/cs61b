@@ -1,4 +1,5 @@
 /* DList1.java */
+package lab4;
 
 /**
  *  A DList1 is a mutable doubly-linked list.  (No sentinel, not
@@ -67,7 +68,16 @@ public class DList1 {
    *  insertFront() inserts an item at the front of a DList1.
    */
   public void insertFront(int i) {
-    // Your solution here.
+    DListNode1 front = new DListNode1(i);
+    if (size == 0) {
+      head = front;
+      tail = front;
+    } else {
+      front.next = head;
+      head.prev = front;
+      head = front;
+    }
+    size++;
   }
 
   /**
@@ -75,7 +85,16 @@ public class DList1 {
    *  list is empty, do nothing.
    */
   public void removeFront() {
-    // Your solution here.
+    if (size == 1) {
+      head = null;
+      tail = null;
+      size--;
+    }
+    if (size > 1) {
+      head = head.next;
+      head.prev = null;
+      size--;
+    }
   }
 
   /**
