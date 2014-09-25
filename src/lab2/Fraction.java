@@ -1,6 +1,6 @@
 /* Fraction.java */
 package lab2;
-  
+
 /** The Fraction class implements nonnegative fractions (rational numbers).
  */
 class Fraction {
@@ -39,13 +39,13 @@ class Fraction {
   /** Constructs a Fraction 0/1. 
    */
   public Fraction() {
-  	this(0, 1);
+    this(0, 1);
   }
 
   /** Copies the Fraction "original".
    */
   public Fraction(Fraction original) {
-  	this(original.numerator, original.denominator);
+    this(original.numerator, original.denominator);
   }
 
   /** Converts this Fraction to a string format:  "numerator/denominator."
@@ -65,8 +65,8 @@ class Fraction {
    */
   public Fraction add(Fraction f2) {
     Fraction r = new Fraction((numerator * f2.denominator) +
-			      (f2.numerator * denominator),
-			      denominator * f2.denominator);
+        (f2.numerator * denominator),
+        denominator * f2.denominator);
     return r;
   }
 
@@ -94,10 +94,10 @@ class Fraction {
    * @return the gcd of x and y
    */
   static private int gcd(int x, int y) {
-  	if (y == 0) {
-  		return x;
-  	}
-  	return gcd(y,x % y);
+    if (y == 0) {
+      return x;
+    }
+    return gcd(y,x % y);
   }
 
   /** Put the Fraction class through some tests.
@@ -125,7 +125,7 @@ class Fraction {
 
     System.out.println("The sum of " + f1 + " and " + f2 + " is " + sumOfTwo);
     System.out.println("The sum of " + f0 + ", " + f1 + " and " + f2 + " is " +
-                       sumOfThree);
+        sumOfThree);
 
     /* Test the methods used in Part III. */
     System.out.println("\nTesting changeNumerator and fracs:");
@@ -133,7 +133,7 @@ class Fraction {
     f3.changeNumerator(7);
     System.out.println("Now f3 is " + f3 + ", which should be 7/20");
     System.out.println("The total number of Fraction objects is " +
-                       f3.fracs());
+        f3.fracs());
 
     /* Test gcd function (static method). */
     System.out.println("\nTesting gcd:");

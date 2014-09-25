@@ -20,14 +20,14 @@ class Nuke2 {
    *             user's input, including when the input string contains
    *             less than two characters.
    */
-	public static void main(String[] args) throws Exception {
-	
-		BufferedReader keyboard;
-		String input;
-		
-		keyboard = new BufferedReader(new InputStreamReader(System.in));
-		input = keyboard.readLine();
-		String output = input.charAt(0) + input.substring(2, input.length());
-		System.out.println(output);
-	}
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader keyboard;
+    String input;
+
+    keyboard = new BufferedReader(new InputStreamReader(System.in));
+    input = keyboard.readLine();
+    String output = input.charAt(0) + input.substring(2, input.length());
+    System.out.println(output);
+  }
 }

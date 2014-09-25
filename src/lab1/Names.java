@@ -8,9 +8,9 @@ package lab1;
 
 class Names {
 
-/** Performs various string operations on the name John Fitzgerald Kennedy.
- *  @param arg is not used.
- */
+  /** Performs various string operations on the name John Fitzgerald Kennedy.
+   *  @param arg is not used.
+   */
   public static void main(String arg[]) {
     String first = "John";
     String middle = "Fitzgerald";
@@ -33,13 +33,13 @@ class Names {
 
     System.out.println(first + " equals john is " + first.equals("john"));
     System.out.println(first + " equals john (ignoring case) is " 
-		       + first.equalsIgnoreCase("john"));
+        + first.equalsIgnoreCase("john"));
     System.out.println("The character at index 3 in " + middle + " is " +
-		       middle.substring(3,4));
+        middle.substring(3,4));
     System.out.println("The index of \"gerald\" within " + middle + " is " +
-		       middle.indexOf("gerald"));
+        middle.indexOf("gerald"));
     System.out.println("The index of \"gerald\" within " + last + " is " +
-		       last.indexOf("gerald"));
+        last.indexOf("gerald"));
 
     System.out.println();
   }

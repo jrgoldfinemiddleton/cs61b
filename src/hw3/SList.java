@@ -112,15 +112,15 @@ public class SList {
    **/
 
   public void squish() {
-  	SListNode finger = head, cursor = head;
-  	while (finger != null) {
-  		cursor = finger.next;
-  		while (cursor != null && cursor.item.equals(finger.item)) {
-  			finger.next = cursor.next;
-  			cursor = cursor.next;
-  		}
-  		finger = finger.next;
-  	}
+    SListNode finger = head, cursor = head;
+    while (finger != null) {
+      cursor = finger.next;
+      while (cursor != null && cursor.item.equals(finger.item)) {
+        finger.next = cursor.next;
+        cursor = cursor.next;
+      }
+      finger = finger.next;
+    }
   }
 
   /**
@@ -135,11 +135,11 @@ public class SList {
    **/
 
   public void twin() {
-  	SListNode finger = head;
-  	while (finger != null) {
-  		finger.next = new SListNode(finger.item, finger.next);
-  		finger = finger.next.next;
-  	}
+    SListNode finger = head;
+    while (finger != null) {
+      finger.next = new SListNode(finger.item, finger.next);
+      finger = finger.next.next;
+    }
   }
 
   /**
@@ -175,7 +175,7 @@ public class SList {
     testAfterInsertEnd();
   }
 
-    
+
   /**
    *  testEmpty() tests toString(), isEmpty(), length(), insertFront(), and
    *  insertEnd() on an empty list.  Prints summary information of the tests
@@ -187,29 +187,29 @@ public class SList {
     SList lst2 = new SList();
     System.out.println();
     System.out.println("Here is a list after construction: "
-		       + lst1.toString());
+        + lst1.toString());
     TestHelper.verify(lst1.toString().equals("[  ]"),
-		      "toString on newly constructed list failed");
+        "toString on newly constructed list failed");
 
     System.out.println("isEmpty() should be true. It is: " +
-		       lst1.isEmpty());
+        lst1.isEmpty());
     TestHelper.verify(lst1.isEmpty() == true,
-		      "isEmpty() on newly constructed list failed");    
+        "isEmpty() on newly constructed list failed");    
 
     System.out.println("length() should be 0. It is: " +
-		       lst1.length());
+        lst1.length());
     TestHelper.verify(lst1.length() == 0, 
-		      "length on newly constructed list failed");    
+        "length on newly constructed list failed");    
     lst1.insertFront(new Integer(3));
     System.out.println("Here is a list after insertFront(3) to an empty list: "
-		       + lst1.toString());
+        + lst1.toString());
     TestHelper.verify(lst1.toString().equals("[  3  ]"),
-		      "InsertFront on empty list failed");
+        "InsertFront on empty list failed");
     lst2.insertEnd(new Integer(5));
     System.out.println("Here is a list after insertEnd(5) on an empty list: "
-		       + lst2.toString());
+        + lst2.toString());
     TestHelper.verify(lst2.toString().equals("[  5  ]"),
-		      "insertEnd on empty list failed");
+        "insertEnd on empty list failed");
   }
 
   /**
@@ -225,24 +225,24 @@ public class SList {
     lst1.insertFront(new Integer(1));
     System.out.println();
     System.out.println("Here is a list after insertFront 3, 2, 1: "
-		       + lst1.toString());
+        + lst1.toString());
     TestHelper.verify(lst1.toString().equals("[  1  2  3  ]"),
-		      "InsertFronts on non-empty list failed");
+        "InsertFronts on non-empty list failed");
     System.out.println("isEmpty() should be false. It is: " +
-		       lst1.isEmpty());
+        lst1.isEmpty());
     TestHelper.verify(lst1.isEmpty() == false,
-		      "isEmpty() after insertFront failed");    
+        "isEmpty() after insertFront failed");    
     System.out.println("length() should be 3. It is: " +
-		       lst1.length());
+        lst1.length());
     TestHelper.verify(lst1.length() == 3, 
-		      "length() after insertFront failed");
+        "length() after insertFront failed");
     lst1.insertEnd(new Integer(4));
     System.out.println("Here is the same list after insertEnd(4): "
-		       + lst1.toString());
+        + lst1.toString());
     TestHelper.verify(lst1.toString().equals("[  1  2  3  4  ]"),
-		      "insertEnd on non-empty list failed");
+        "insertEnd on non-empty list failed");
   }
-    
+
   /**
    *  testAfterInsertEnd() tests toString(), isEmpty(), length(),
    *  insertFront(), and insertEnd() after insertEnd().  Prints summary
@@ -255,19 +255,19 @@ public class SList {
     lst1.insertEnd(new Integer(7));
     System.out.println();
     System.out.println("Here is a list after insertEnd 6, 7: "
-		       + lst1.toString());
+        + lst1.toString());
     System.out.println("isEmpty() should be false. It is: " +
-		       lst1.isEmpty());
+        lst1.isEmpty());
     TestHelper.verify(lst1.isEmpty() == false,
-		      "isEmpty() after insertEnd failed");    
+        "isEmpty() after insertEnd failed");    
     System.out.println("length() should be 2. It is: " +
-		       lst1.length());
+        lst1.length());
     TestHelper.verify(lst1.length() == 2, 
-		      "length() after insertEndfailed");
+        "length() after insertEndfailed");
     lst1.insertFront(new Integer(5));
     System.out.println("Here is the same list after insertFront(5): "
-		       + lst1.toString());
+        + lst1.toString());
     TestHelper.verify(lst1.toString().equals("[  5  6  7  ]"),
-		      "insertFront after insertEnd failed");
+        "insertFront after insertEnd failed");
   }
 }
