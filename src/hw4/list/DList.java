@@ -1,6 +1,5 @@
 /* DList.java */
-
-package list;
+package hw4.list;
 
 /**
  *  A DList is a mutable doubly-linked list ADT.  Its implementation is
@@ -51,7 +50,10 @@ public class DList {
    *  DList() constructor for an empty DList.
    */
   public DList() {
-    //  Your solution here.
+    head = newNode(null, null, null);
+    head.prev = head;
+    head.next = head;
+    size = 0;
   }
 
   /**
@@ -78,7 +80,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void insertFront(Object item) {
-    // Your solution here.
+    DListNode front = newNode(item, head, head.next);
+    front.next.prev = front;
+    head.next = front;
+    size++;
   }
 
   /**
@@ -87,7 +92,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void insertBack(Object item) {
-    // Your solution here.
+    DListNode back = newNode(item, head.prev, head);
+    back.prev.next = back;
+    head.prev = back;
+    size++;
   }
 
   /**
@@ -100,7 +108,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode front() {
-    // Your solution here.
+    if (head.next != head) {
+      return head.next;
+    }
+    return null;
   }
 
   /**
@@ -113,7 +124,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode back() {
-    // Your solution here.
+    if (head.prev != head) {
+      return head.prev;
+    }
+    return null;
   }
 
   /**
@@ -127,7 +141,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode next(DListNode node) {
-    // Your solution here.
+    if (node != null && node.next != head) {
+      return node.next;
+    }
+    return null;
   }
 
   /**
@@ -141,7 +158,10 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode prev(DListNode node) {
-    // Your solution here.
+    if (node != null && node.prev != head) {
+      return node.prev;
+    }
+    return null;
   }
 
   /**
@@ -152,7 +172,12 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void insertAfter(Object item, DListNode node) {
-    // Your solution here.
+    if (node != null) {
+      DListNode newNode = newNode(item, node, node.next);
+      node.next = newNode;
+      newNode.next.prev = newNode;
+      size++;
+    }
   }
 
   /**
@@ -163,7 +188,12 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void insertBefore(Object item, DListNode node) {
-    // Your solution here.
+    if (node != null) {
+      DListNode newNode = newNode(item, node.prev, node);
+      node.prev = newNode;
+      newNode.prev.next = newNode;
+      size++;
+    }
   }
 
   /**
@@ -171,7 +201,13 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void remove(DListNode node) {
-    // Your solution here.
+    if (node != null && node != head) {
+      node.prev.next = node.next;
+      node.next.prev = node.prev;
+      node.prev = null;
+      node.next = null;
+      size--;
+    }
   }
 
   /**
@@ -190,5 +226,158 @@ public class DList {
       current = current.next;
     }
     return result + "]";
+  }
+
+  public void checkInvariants() {
+    System.out.println("\nVerifying invariants.");
+    boolean tightShip = true;    
+    // 1) head != null.
+    if (head == null) {
+      System.out.println("ERROR: Invariant 1 failed.");
+      System.out.println("head == null!");
+      tightShip = false;
+    }
+    
+    DListNode x = head;
+    int cur = 0;
+    do
+    {
+      // 2) For any DListNode x in a DList, x.next != null.
+      if (x.next == null) {
+        System.out.println("ERROR: Invariant 2 failed.");
+        System.out.println("x.next == null for element " + cur);
+        tightShip = false;
+        cur--;
+        break;
+      }
+
+      // 3) For any DListNode x in a DList, x.prev != null.
+      if (x.prev == null) {
+        System.out.println("ERROR: Invariant 3 failed.");
+        System.out.println("x.prev == null for element " + cur);
+        tightShip = false;
+      }
+
+      // 4) For any DListNode x in a DList, if x.next == y, then y.prev == x.
+      DListNode y = x.next;
+      if (y.prev != x) {
+        System.out.println("ERROR: Invariant 4 failed.");
+        System.out.println("x.next == y but y.prev != x for element " + cur);
+        tightShip = false;
+      }
+
+      // 5) For any DListNode x in a DList, if x.prev == y, then y.next == x.
+      y = x.prev;
+      if (y.next != x) {
+        System.out.println("ERROR: Invariant 5 failed.");
+        System.out.println("x.prev == y but y.next != x for element " + cur);
+        tightShip = false;
+      }
+
+      y = null;
+      x = x.next;
+      cur++;
+    } while (x != head);
+
+    // 6) size is the number of DListNodes, NOT COUNTING the sentinel,
+    // that can be accessed from the sentinel (head) by a sequence of
+    // "next" references.
+    if (size != --cur) {
+      System.out.println("ERROR: Invariant 6 failed.");
+      System.out.println("size == " + size);
+      System.out.println("Should be " + cur + ".");
+      tightShip = false;
+    }
+
+    System.out.print("You ");
+    if (!tightShip) {
+      System.out.print("do not ");
+    }
+    System.out.println("run a tight ship!\n");
+  }
+
+  /**
+   *  main() contains test code for making new DList objects, inserting and
+   *  removing nodes, and detemining the size of DList objects.
+   */
+  public static void main(String[] args) {
+    System.out.println("Constructing a new DList.");
+    DList l1 = new DList();
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to remove the head node.");
+    l1.remove(l1.head);
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to remove the node after head.");
+    l1.remove(l1.head.next);
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to insert a new front node containing 3.");
+    l1.insertFront(new Integer(3));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to insert a new front node containing 2.");
+    l1.insertFront(new Integer(2));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to insert a new front node containing 99.");
+    l1.insertFront(new Integer(99));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to remove the node after head.");
+    l1.remove(l1.head.next);
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+    l1.checkInvariants();
+
+    System.out.println("Attempting to insert a new back node containing 9");
+    l1.insertBack(new Integer(9));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.print("\nAttempting to insert a new back node containing ");
+    System.out.println("\"deleteMe\".");
+    l1.insertBack(new String("deleteMe"));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.print("\nAttempting to insert a new node containing 4 after the ");
+    System.out.println("second node.");
+    l1.insertAfter(4, l1.next(l1.head).next);
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.println("\nAttempting to remove the back node.");
+    l1.remove(l1.prev(l1.head));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+
+    System.out.print("\nAttempting to insert a new node containing 8 after ");
+    System.out.println("the second to last node.");
+    l1.insertAfter(8, l1.prev(l1.back()));
+    System.out.println(l1);
+    System.out.println("Current size: " + l1.length());
+    l1.checkInvariants();
+
+    System.out.println("Constructing a new DList.");
+    DList l2 = new DList();
+    System.out.println(l2);
+
+    System.out.print("\nAttempting to set the head node of the new DList ");
+    System.out.println("to the first node of the old DList.");
+    System.out.print("Good luck with that! (I bet it will screw up the ");
+    System.out.println("invariants.)\n");
+    l2.head = l1.head.next;
+    System.out.println("First DList:");
+    l1.checkInvariants();
+    System.out.println("Second DList:");
+    l2.checkInvariants();
   }
 }
