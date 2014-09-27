@@ -25,6 +25,7 @@
  *  is modified after the RunIterator is constructed.  (Especially if it is
  *  modified by setPixel().)
  */
+package pj1;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -36,7 +37,7 @@ public class RunIterator implements Iterator {
    *  Define any variables associated with a RunIterator object here.
    *  These variables MUST be private.
    */
-
+  DListNode curRun;
 
 
 
@@ -54,8 +55,8 @@ public class RunIterator implements Iterator {
   // constructor that you want so that your RunLengthEncoding.iterator()
   // implementation can construct a RunIterator that points to the first run of
   // the encoding.
-  RunIterator() {
-    // Your solution here.  You may add parameters to the method signature.
+  RunIterator(DListNode node) {
+    curRun = node;
   }
 
   /**
@@ -65,8 +66,7 @@ public class RunIterator implements Iterator {
    *  @return true if the iterator has more elements.
    */
   public boolean hasNext() {
-    // Replace the following line with your solution.
-    return false;
+    return curRun.item != null;
   }
 
   /**
@@ -91,12 +91,12 @@ public class RunIterator implements Iterator {
    *  for the sole purpose of returning four ints.
    */
   public int[] next() {
-    // Construct a new array of 4 ints, fill in its values, and return it.
-    // Don't forget to advance the RunIterator's pointer so that the next
-    // call to next() will return the subsequent run.
-
-    // Replace the following line with your solution.
-    return new int[4];
+    int[] cur = new int[4];
+    for (int i = 0; i < 4; i++) {
+      cur[i] = ((int[])curRun.item)[i];
+    }
+    curRun = curRun.next;
+    return cur;
   }
 
   /**

@@ -20,16 +20,19 @@
  *
  *  See the README file accompanying this project for additional details.
  */
+package pj1;
 
 import java.util.Iterator;
 
+@SuppressWarnings({ "rawtypes", "unused" })
 public class RunLengthEncoding implements Iterable {
 
   /**
    *  Define any variables associated with a RunLengthEncoding object here.
    *  These variables MUST be private.
    */
-
+  private DList runs;
+  private int width, height;
 
 
 
@@ -47,7 +50,8 @@ public class RunLengthEncoding implements Iterable {
    */
 
   public RunLengthEncoding(int width, int height) {
-    // Your solution here.
+    this(width, height, new int[]{0}, new int[]{0}, new int[]{0},
+        new int[]{width * height});
   }
 
   /**
@@ -73,7 +77,15 @@ public class RunLengthEncoding implements Iterable {
 
   public RunLengthEncoding(int width, int height, int[] red, int[] green,
                            int[] blue, int[] runLengths) {
-    // Your solution here.
+    this.width = width;
+    this.height = height;
+    this.runs = new DList();
+    int i = 0;
+    while (i < runLengths.length) {
+      int[] run = {runLengths[i], red[i], green[i], blue[i]};
+      runs.insertBack(run);
+      i++;
+    }
   }
 
   /**
@@ -84,8 +96,7 @@ public class RunLengthEncoding implements Iterable {
    */
 
   public int getWidth() {
-    // Replace the following line with your solution.
-    return 1;
+    return width;
   }
 
   /**
@@ -95,8 +106,7 @@ public class RunLengthEncoding implements Iterable {
    *  @return the height of the image that this run-length encoding represents.
    */
   public int getHeight() {
-    // Replace the following line with your solution.
-    return 1;
+    return height;
   }
 
   /**
@@ -107,10 +117,7 @@ public class RunLengthEncoding implements Iterable {
    *  RunLengthEncoding.
    */
   public RunIterator iterator() {
-    // Replace the following line with your solution.
-    return null;
-    // You'll want to construct a new RunIterator, but first you'll need to
-    // write a constructor in the RunIterator class.
+    return new RunIterator(runs.head.next);
   }
 
   /**
@@ -120,8 +127,27 @@ public class RunLengthEncoding implements Iterable {
    *  @return the PixImage that this RunLengthEncoding encodes.
    */
   public PixImage toPixImage() {
-    // Replace the following line with your solution.
-    return new PixImage(1, 1);
+    PixImage image = new PixImage(width, height);
+    RunIterator it = iterator();
+    int x = 0, y = 0;
+    while (it.hasNext()) {
+      int[] curRun = it.next();
+      int runLength = curRun[0];
+      int r = curRun[1];
+      int g = curRun[2];
+      int b = curRun[3];
+      int posInRun = 1;
+      while (posInRun <= runLength) {
+        if (x >= width) {
+          x = 0;
+          y++;
+        }
+        image.setPixel(x, y, (short)r, (short)g, (short)b);
+        x++;
+        posInRun++;
+      }
+    }
+    return image;
   }
 
   /**
@@ -134,8 +160,24 @@ public class RunLengthEncoding implements Iterable {
    *  @return a String representation of this RunLengthEncoding.
    */
   public String toString() {
-    // Replace the following line with your solution.
-    return "";
+    String s = "";
+    if (runs.size == 1) {
+      s = "RLE: 1 run\n";
+    } else {
+      s = "RLE: " + runs.size + " runs\n";
+    }
+    DListNode cur = runs.head.next;
+    long i = 1;
+    while (cur.item != null) {
+      s += i + ". runLength:" + ((int[])cur.item)[0];
+      int r, g, b;
+      r = ((int[])cur.item)[1];
+      g = ((int[])cur.item)[2];
+      b = ((int[])cur.item)[3];
+      s += " (" + r + "," + g + "," + b + ")\n";
+      cur = cur.next;
+    }
+    return s;
   }
 
 
@@ -153,8 +195,32 @@ public class RunLengthEncoding implements Iterable {
    *  @param image is the PixImage to run-length encode.
    */
   public RunLengthEncoding(PixImage image) {
-    // Your solution here, but you should probably leave the following line
-    // at the end.
+    // I'm sure this can be improved.  Looks really sloppy.
+    width = image.getWidth();
+    height = image.getHeight();
+    runs = new DList();
+    int curRunLength = 0;
+    // initialize to rgb of first pixel
+    int r = image.getRed(0, 0), g = image.getGreen(0, 0),
+        b = image.getBlue(0, 0);
+    // always a pixel behind because we must check the rgb of next pixel
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (r != image.getRed(x, y) || g != image.getGreen(x, y) ||
+            b != image.getBlue(x, y)) {
+          runs.insertBack(new int[]{curRunLength, r, g, b});
+          curRunLength = 1;
+          r = image.getRed(x, y);
+          g = image.getGreen(x, y);
+          b = image.getBlue(x, y);
+        } else {
+          curRunLength++;
+        }
+      }
+    }
+    // make up for being a pixel behind
+    runs.insertBack(new int[]{curRunLength, r, g, b});
+    
     check();
   }
 
@@ -164,7 +230,31 @@ public class RunLengthEncoding implements Iterable {
    *  all run lengths does not equal the number of pixels in the image.
    */
   public void check() {
-    // Your solution here.
+    int totalRunsLength = 0;
+    int r = -1, g = -1, b = -1;
+    RunIterator it = iterator();
+    
+    int runNo = 0;
+    while (it.hasNext()) {
+      int[] curRun = it.next();
+      totalRunsLength += curRun[0];
+      int curR = curRun[1];
+      int curG = curRun[2];
+      int curB = curRun[3];
+      runNo++;
+      if (r == curR && g == curG && b == curB) {
+        System.err.println("Two consecutive runs have the same RGB intensities.");
+        System.err.println("Run #" + runNo);
+        return;
+      }
+      r = curR;
+      g = curG;
+      b = curB;
+    }
+    if (totalRunsLength != width * height) {
+      System.err.println("The sum of all run lengths is not equal to the " +
+          "number of pixels in the image.");
+    }
   }
 
 
@@ -186,9 +276,116 @@ public class RunLengthEncoding implements Iterable {
    *  @param blue the new blue intensity to store at coordinate (x, y).
    */
   public void setPixel(int x, int y, short red, short green, short blue) {
-    // Your solution here, but you should probably leave the following line
-    //   at the end.
-    check();
+    RunIterator it = iterator();
+    int runLengthsTotal = 0;
+    DListNode prev, cur, next;
+    prev = null;
+    cur = runs.head;
+    next = cur.next;
+    int[] curRun = (int[])cur.item;
+    int pixelPos = y * width + x;
+    while (runLengthsTotal <= pixelPos) {
+      if (it.hasNext()) {
+        curRun = it.next();
+        cur = cur.next;
+        runLengthsTotal += curRun[0];
+      }
+    }
+    int curRunLength, curR, curG, curB;
+    curRunLength = curRun[0];
+    curR = curRun[1];
+    curG = curRun[2];
+    curB = curRun[3];
+    
+    boolean hasPrevRun, hasNextRun;
+    
+    prev = cur.prev;
+    hasPrevRun = (prev.item != null);
+    int prevRunLength = -1, prevR = -1, prevG = -1, prevB = -1;
+    if (hasPrevRun) {
+      prevRunLength = ((int[])prev.item)[0];
+      prevR = ((int[])prev.item)[1];
+      prevG = ((int[])prev.item)[2];
+      prevB = ((int[])prev.item)[3];
+    }
+
+    next = cur.next;
+    hasNextRun = (next.item != null);
+    int nextRunLength = -1, nextR = -1, nextG = -1, nextB = -1;
+    if (hasNextRun) {
+      nextRunLength = ((int[])next.item)[0];
+      nextR = ((int[])next.item)[1];
+      nextG = ((int[])next.item)[2];
+      nextB = ((int[])next.item)[3];
+    }
+    
+    // below flags are only useful for pixels on the edge:
+    // updated pixel has same rgb as previous run
+    boolean sameAsPrev = (prevR == red && prevG == green &&
+        prevB == blue);
+    // updated pixel has same rgb as next run
+    boolean sameAsNext = (nextR == red && nextG == green && nextB == blue);
+    
+    // pixel is already set correctly
+    if (curR == red && curG == green && curB == blue) {
+      return;
+    }
+    // pixel is in a run of length 1
+    if (curRunLength == 1) {
+      // same as both previous and next runs
+      if (sameAsPrev && sameAsNext) {
+        runs.remove(prev);
+        runs.remove(next);
+        cur.item = new int[]{prevRunLength + curRunLength + nextRunLength,
+            red, green, blue};
+        return;
+      }
+      // different from both previous and next runs
+      if (!sameAsPrev && !sameAsNext) {
+        cur.item = new int[]{1, red, green, blue};
+        return;
+      }
+    }
+    
+    // pixel is at beginning of a run
+    if (pixelPos == runLengthsTotal - curRunLength) {
+      if (sameAsPrev) {
+        prev.item = new int[]{prevRunLength + 1, red, green, blue};
+        if (curRunLength == 1) {
+          runs.remove(cur);
+        } else {
+          cur.item = new int[]{curRunLength - 1, curR, curG, curB};
+        }
+        return;
+      }
+      // pixel is different from previous and current run
+      runs.insertBefore(cur, new int[]{1, red, green, blue});
+      cur.item = new int[]{curRunLength - 1, curR, curG, curB};
+      return;
+    }
+    
+    // pixel is at end of a run
+    if (pixelPos == runLengthsTotal - 1) {
+      if (sameAsNext) {
+        next.item = new int[] {nextRunLength + 1, red, green, blue};
+        if (curRunLength == 1) {
+          runs.remove(cur);
+        } else {
+          cur.item = new int[]{curRunLength - 1, curR, curG, curB};
+        }
+        return;
+      }
+      // pixel is different from next and current run
+      runs.insertAfter(cur, new int[]{1, red, green, blue});
+      cur.item = new int[]{curRunLength - 1, curR, curG, curB};
+      return;
+    }
+    
+    // pixel is in the middle of a run
+    int posInRun = pixelPos + curRunLength - runLengthsTotal;
+    runs.insertBefore(cur, new int[]{posInRun, curR, curG, curB});
+    runs.insertAfter(cur, new int[]{curRunLength - (posInRun + 1), curR, curG, curB});
+    cur.item = new int[]{1, red, green, blue};
   }
 
 

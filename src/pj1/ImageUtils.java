@@ -15,6 +15,7 @@
  *
  *  @author Joel Galenson
  **/
+package pj1;
 
 import java.awt.Color;
 import java.awt.event.WindowAdapter;

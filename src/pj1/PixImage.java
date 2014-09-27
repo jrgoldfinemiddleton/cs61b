@@ -1,4 +1,5 @@
 /* PixImage.java */
+package pj1;
 
 /**
  *  The PixImage class represents an image, which is a rectangular grid of
@@ -21,7 +22,8 @@ public class PixImage {
    *  Define any variables associated with a PixImage object here.  These
    *  variables MUST be private.
    */
-
+  private int width, height;  // dimensions of image
+  private Pixel[][] pixels;     // array of pixels
 
 
 
@@ -33,7 +35,16 @@ public class PixImage {
    * @param height the height of the image.
    */
   public PixImage(int width, int height) {
-    // Your solution here.
+    this.width = width;
+    this.height = height;
+    this.pixels = new Pixel[width][height];
+    
+    int x, y;
+    for (x = 0; x < width; x++) {
+      for (y = 0; y < height; y++) {
+        pixels[x][y] = new Pixel((short)0, (short)0, (short)0);
+      }
+    }
   }
 
   /**
@@ -42,8 +53,7 @@ public class PixImage {
    * @return the width of the image.
    */
   public int getWidth() {
-    // Replace the following line with your solution.
-    return 1;
+    return width;
   }
 
   /**
@@ -52,8 +62,7 @@ public class PixImage {
    * @return the height of the image.
    */
   public int getHeight() {
-    // Replace the following line with your solution.
-    return 1;
+    return height;
   }
 
   /**
@@ -64,8 +73,7 @@ public class PixImage {
    * @return the red intensity of the pixel at coordinate (x, y).
    */
   public short getRed(int x, int y) {
-    // Replace the following line with your solution.
-    return 0;
+    return pixels[x][y].r;
   }
 
   /**
@@ -76,8 +84,7 @@ public class PixImage {
    * @return the green intensity of the pixel at coordinate (x, y).
    */
   public short getGreen(int x, int y) {
-    // Replace the following line with your solution.
-    return 0;
+    return pixels[x][y].g;
   }
 
   /**
@@ -88,8 +95,7 @@ public class PixImage {
    * @return the blue intensity of the pixel at coordinate (x, y).
    */
   public short getBlue(int x, int y) {
-    // Replace the following line with your solution.
-    return 0;
+    return pixels[x][y].b;
   }
 
   /**
@@ -106,7 +112,12 @@ public class PixImage {
    * @param blue the new blue intensity for the pixel at coordinate (x, y).
    */
   public void setPixel(int x, int y, short red, short green, short blue) {
-    // Your solution here.
+    if ( (red >= 0 && red <= 255) && (green >= 0 && green <= 255) &&
+        (blue >= 0 && blue <= 255) ) {
+      pixels[x][y].r = red;
+      pixels[x][y].g = green;
+      pixels[x][y].b = blue;
+    }
   }
 
   /**
@@ -119,8 +130,15 @@ public class PixImage {
    * @return a String representation of this PixImage.
    */
   public String toString() {
-    // Replace the following line with your solution.
-    return "";
+    String s = "PixImage:\n";
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        Pixel cur = pixels[x][y];
+        s += "(" + x + "," + y + "): " + cur.r + "," + cur.g + "," +
+            cur.b + "\n";
+      }
+    }
+    return s;
   }
 
   /**
@@ -153,8 +171,39 @@ public class PixImage {
    * @return a blurred version of "this" PixImage.
    */
   public PixImage boxBlur(int numIterations) {
-    // Replace the following line with your solution.
-    return this;
+    if (numIterations < 1) {
+      return this;
+    }
+    PixImage result = new PixImage(width, height);
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        result.pixels[x][y] = this.blurSquare(x, y);
+      }
+    }
+    return result.boxBlur(numIterations - 1);
+  }
+  
+  private Pixel blurSquare(int x, int y) {
+    int rTotal = 0, gTotal = 0, bTotal = 0;
+    int numNeighbors = 0;
+    
+    for (int i = x - 1; i <= x + 1; i++) {
+      if (i >= 0 && i < width) {
+        for (int j = y - 1; j <= y + 1; j++) {
+          if (j >= 0 && j < height) {
+            rTotal += this.pixels[i][j].r;
+            gTotal += this.pixels[i][j].g;
+            bTotal += this.pixels[i][j].b;
+            numNeighbors++;
+          }
+        }
+      }
+    }
+    
+    short rOut = (short) (rTotal / numNeighbors);
+    short gOut = (short) (gTotal / numNeighbors);
+    short bOut = (short) (bTotal / numNeighbors);
+    return new Pixel(rOut, gOut, bOut);
   }
 
   /**
@@ -198,10 +247,75 @@ public class PixImage {
    * Whiter pixels represent stronger edges.
    */
   public PixImage sobelEdges() {
-    // Replace the following line with your solution.
-    return this;
-    // Don't forget to use the method mag2gray() above to convert energies to
-    // pixel intensities.
+    PixImage result = new PixImage(width, height);
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        result.pixels[x][y] = this.sobelSquare(x, y);
+      }
+    }
+    return result;
+  }
+  
+  private Pixel sobelSquare(int x, int y) {
+    int gxr = 0, gxg = 0, gxb = 0;
+    int gyr = 0, gyg = 0, gyb = 0;
+    
+    gxr = reflect(x - 1, y - 1).r + (2 * reflect(x - 1, y).r) +
+        reflect(x - 1, y + 1).r - reflect(x + 1, y - 1).r -
+        (2 * reflect(x + 1, y).r) - reflect(x + 1, y + 1).r;
+    
+    gxg = reflect(x - 1, y - 1).g + (2 * reflect(x - 1, y).g) +
+        reflect(x - 1, y + 1).g - reflect(x + 1, y - 1).g -
+        (2 * reflect(x + 1, y).g) - reflect(x + 1, y + 1).g;
+    
+    gxb = reflect(x - 1, y - 1).b + (2 * reflect(x - 1, y).b) +
+        reflect(x - 1, y + 1).b - reflect(x + 1, y - 1).b -
+        (2 * reflect(x + 1, y).b) - reflect(x + 1, y + 1).b;
+    
+    gyr = reflect(x - 1, y - 1).r + (2 * reflect(x, y - 1).r) +
+        reflect(x + 1, y - 1).r - reflect(x - 1, y + 1).r -
+        (2 * reflect(x, y + 1).r) - reflect(x + 1, y + 1).r;
+    
+    gyg = reflect(x - 1, y - 1).g + (2 * reflect(x, y - 1).g) +
+        reflect(x + 1, y - 1).g - reflect(x - 1, y + 1).g -
+        (2 * reflect(x, y + 1).g) - reflect(x + 1, y + 1).g;
+    
+    gyb = reflect(x - 1, y - 1).b + (2 * reflect(x, y - 1).b) +
+        reflect(x + 1, y - 1).b - reflect(x - 1, y + 1).b -
+        (2 * reflect(x, y + 1).b) - reflect(x + 1, y + 1).b;
+    
+    long energy = gxr * gxr + gxg * gxg + gxb * gxb +
+                  gyr * gyr + gyg * gyg + gyb * gyb;
+    short gray = mag2gray(energy);
+    return new Pixel(gray, gray, gray);
+  }
+  
+  private Pixel reflect(int x, int y) {
+    if (x < 0 && y < 0) {
+      return pixels[0][0];
+    }
+    if (x < 0 && y >= height) {
+      return pixels[0][height - 1];
+    }
+    if (x >= width && y < 0) {
+      return pixels[width - 1][0];
+    }
+    if (x >= width && y >= height) {
+      return pixels[width - 1][height - 1];
+    }
+    if (x < 0) {
+      return pixels[0][y];
+    }
+    if (x >= width) {
+      return pixels[width - 1][y];
+    }
+    if (y < 0) {
+      return pixels[x][0];
+    }
+    if (y >= height) {
+      return pixels[x][height - 1];
+    }
+    return pixels[x][y];
   }
 
 

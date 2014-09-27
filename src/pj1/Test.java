@@ -6,6 +6,7 @@
  *
  *  @author Jonathan Shewchuk and Joel Galenson
  */
+package pj1;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -128,6 +129,7 @@ public class Test {
       os.writeObject(run);
   }
 
+  @SuppressWarnings("unused")
   private static ArrayList<int[]> decodeRLE(ObjectInputStream os)
                                   throws IOException, ClassNotFoundException {
     int width = os.readInt();
@@ -181,6 +183,7 @@ public class Test {
     return image;
   }
   
+  @SuppressWarnings("unused")
   private static int clamp(int coord, int max) {
     int d = MAX_PRINT_SIZE / 2;
     coord -= MAX_PRINT_SIZE / 2;

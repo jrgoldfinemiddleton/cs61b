@@ -1,4 +1,5 @@
 /* Sobel.java */
+package pj1;
 
 /* DO NOT CHANGE THIS FILE. */
 /* YOUR SUBMISSION MUST WORK CORRECTLY WITH _OUR_ COPY OF THIS FILE. */
