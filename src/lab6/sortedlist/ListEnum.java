@@ -1,6 +1,5 @@
 /* ListEnum.java */
-
-package sortedlist;
+package lab6.sortedlist;
 
 import java.util.Enumeration;
 
@@ -10,6 +9,7 @@ import java.util.Enumeration;
  *  @author Kathy Yelick
  **/
 
+@SuppressWarnings("rawtypes")
 public class ListEnum implements Enumeration {
   private ListNode trav;  
 

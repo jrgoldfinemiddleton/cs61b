@@ -1,8 +1,10 @@
 /* BadAccountException.java */
+package lab6;
 
 /**
  *  Implements an exception that should be thrown for nonexistent accounts.
  **/
+@SuppressWarnings("serial")
 public class BadAccountException extends Exception {
 
   public int accountNumber;  // The invalid account number.

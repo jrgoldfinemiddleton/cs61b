@@ -1,6 +1,7 @@
 /* AccountData.java */
+package lab6;
 
-import sortedlist.*;
+import lab6.sortedlist.*;
 
 /**
  *  Implements a customer's account profile for the virtual teller machine.
@@ -11,7 +12,7 @@ public class AccountData implements Keyable {
   private int    number;      // Account number.
 
   /**
-   *  Constructs a new account for customer "newName" with acount number "num"
+   *  Constructs a new account for customer "newName" with account number "num"
    *  and a $0 starting balance.
    **/
   public AccountData(String newName, int num) {

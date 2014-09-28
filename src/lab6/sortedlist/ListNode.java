@@ -1,6 +1,6 @@
 /* ListNode.java */
 
-package sortedlist;
+package lab6.sortedlist;
 
 /**
  *  ListNode is a class used internally by the List class.  Each node in a

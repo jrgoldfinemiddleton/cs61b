@@ -1,6 +1,5 @@
 /* SortedList.java */
-
-package sortedlist;
+package lab6.sortedlist;
 import java.util.Enumeration;
 
 /**
@@ -85,6 +84,7 @@ public class SortedList {
    *  elements() returns an Enumeration of the components of this list.
    *  @return an Enumeration of the components of this list.
    **/
+  @SuppressWarnings("rawtypes")
   public Enumeration elements() {
     return new ListEnum(head);
   }
@@ -93,6 +93,7 @@ public class SortedList {
    *  toString() returns a String representation of this list.
    *  @return a String representation of this list.
    **/
+  @SuppressWarnings("unused")
   public String toString() {
     int i;
     Object obj;
