@@ -43,7 +43,7 @@ public class AccountData implements Keyable {
     return "" + number;
   }
 
-    
+
   /**
    *  getBalance() returns the balance of this account.
    **/

@@ -85,7 +85,7 @@ public class VirtualTeller {
   private AccountData findAccount(int acct) throws BadAccountException {
     AccountData account = (AccountData) accounts.find(acct);
     if (account == null) {
-        throw new BadAccountException(acct);
+      throw new BadAccountException(acct);
     }
     return account;
   }

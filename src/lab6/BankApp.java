@@ -9,7 +9,7 @@ import java.io.*;
  */
 public class BankApp {
   private BufferedReader bReader =
-          new BufferedReader(new InputStreamReader(System.in));
+      new BufferedReader(new InputStreamReader(System.in));
   private VirtualTeller ATM = new VirtualTeller();
 
   public static void main(String[] args) {
@@ -26,23 +26,23 @@ public class BankApp {
 
     while (!command.equals("quit")) {
       try {
-	if (command.equals("open")) {
-	  bankApp.open();
-	} else if (command.equals("deposit")) {
-	  bankApp.doDeposit();
-	} else if (command.equals("withdraw")) {
-	  bankApp.doWithdraw();
-	} else if (command.equals("inquire")) {
-	  bankApp.doInquire();
-	} else {
-	  System.err.println("Invalid command: " + command);
-	  usage();
-	}
+        if (command.equals("open")) {
+          bankApp.open();
+        } else if (command.equals("deposit")) {
+          bankApp.doDeposit();
+        } else if (command.equals("withdraw")) {
+          bankApp.doWithdraw();
+        } else if (command.equals("inquire")) {
+          bankApp.doInquire();
+        } else {
+          System.err.println("Invalid command: " + command);
+          usage();
+        }
         command = bankApp.readLine("--> ");
       } catch(BadAccountException bae) {
         System.err.println(bae);
       } catch(IOException e) {
-	System.err.println(e);
+        System.err.println(e);
       } catch(Exception e) {
       }
 
@@ -66,11 +66,11 @@ public class BankApp {
     System.out.println("Thanks for opening an account with us!");
   }
 
- /**
-  *  doDeposit() prompts the user for an account number and tries to perform a 
-  *  deposit transaction on that account. 
-  *  @exception IOException if there are problems reading user input.
-  */
+  /**
+   *  doDeposit() prompts the user for an account number and tries to perform a 
+   *  deposit transaction on that account. 
+   *  @exception IOException if there are problems reading user input.
+   */
   private void doDeposit() throws IOException, BadAccountException {
     // Get account number.
     int acctNumber = readInt("Enter account number: ");
@@ -78,7 +78,7 @@ public class BankApp {
 
     ATM.deposit(acctNumber, amount);
     System.out.println("New balance for #" + acctNumber + " is " +
-                       ATM.balanceInquiry(acctNumber));
+        ATM.balanceInquiry(acctNumber));
   }
 
   /**
@@ -93,7 +93,7 @@ public class BankApp {
 
     ATM.withdraw(acctNumber, amount);
     System.out.println("New balance for #" + acctNumber + " is " +
-                       ATM.balanceInquiry(acctNumber));
+        ATM.balanceInquiry(acctNumber));
   }
 
   /**
@@ -105,7 +105,7 @@ public class BankApp {
     int acctNumber = readInt("Enter account number: ");
 
     System.out.println("Balance for #" + acctNumber + " is " +
-                       ATM.balanceInquiry(acctNumber));
+        ATM.balanceInquiry(acctNumber));
   }
 
   /**
@@ -123,7 +123,7 @@ public class BankApp {
    */
   private static void usage() {
     System.out.println("Valid commands are: " +
-                       "open, deposit, withdraw, inquire, quit");
+        "open, deposit, withdraw, inquire, quit");
   }
 
   /**

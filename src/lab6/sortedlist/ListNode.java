@@ -1,5 +1,4 @@
 /* ListNode.java */
-
 package lab6.sortedlist;
 
 /**
