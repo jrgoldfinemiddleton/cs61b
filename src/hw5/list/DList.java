@@ -1,6 +1,5 @@
 /* DList.java */
-
-package list;
+package hw5.list;
 
 /**
  *  A DList is a mutable doubly-linked list ADT.  Its implementation is
@@ -57,8 +56,10 @@ public class DList extends List {
    *  DList() constructs for an empty DList.
    **/
   public DList() {
-    // Your solution here.  Similar to Homework 4, but now you need to specify
-    //   the `list' field (second parameter) as well.
+    head = newNode(null, null, null, null);
+    head.next = head;
+    head.prev = head;
+    size = 0;
   }
 
   /**
@@ -69,8 +70,10 @@ public class DList extends List {
    *  Performance:  runs in O(1) time.
    **/
   public void insertFront(Object item) {
-    // Your solution here.  Similar to Homework 4, but now you need to specify
-    //   the `list' field (second parameter) as well.
+    DListNode newNode = newNode(item, this, head, head.next);
+    head.next = newNode;
+    newNode.next.prev = newNode;
+    size++;
   }
 
   /**
@@ -81,8 +84,10 @@ public class DList extends List {
    *  Performance:  runs in O(1) time.
    **/
   public void insertBack(Object item) {
-    // Your solution here.  Similar to Homework 4, but now you need to specify
-    //   the `list' field (second parameter) as well.
+    DListNode newNode = newNode(item, this, head.prev, head);
+    head.prev = newNode;
+    newNode.prev.next = newNode;
+    size++;
   }
 
   /**

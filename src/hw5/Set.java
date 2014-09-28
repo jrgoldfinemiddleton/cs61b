@@ -1,13 +1,14 @@
 /* Set.java */
+package hw5;
 
-import list.*;
+import hw5.list.*;
 
 /**
  *  A Set is a collection of Comparable elements stored in sorted order.
  *  Duplicate elements are not permitted in a Set.
  **/
 public class Set {
-  /* Fill in the data fields here. */
+  List elements;
 
   /**
    * Set ADT invariants:
@@ -23,7 +24,7 @@ public class Set {
    *  Performance:  runs in O(1) time.
    **/
   public Set() { 
-    // Your solution here.
+    elements = new DList();
   }
 
   /**
@@ -32,8 +33,7 @@ public class Set {
    *  Performance:  runs in O(1) time.
    **/
   public int cardinality() {
-    // Replace the following line with your solution.
-    return 0;
+    return elements.length();
   }
 
   /**
@@ -44,8 +44,32 @@ public class Set {
    *
    *  Performance:  runs in O(this.cardinality()) time.
    **/
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void insert(Comparable c) {
-    // Your solution here.
+    if (cardinality() == 0) {
+      elements.insertFront(c);
+    } else {
+      ListNode cur;
+      try {
+        cur = elements.front();
+        // new element is less than current element, so compare it
+        // with the next one
+        while (cur != elements.back() && c.compareTo((Comparable)cur.item()) > 0) {
+          cur = cur.next();
+        }
+        // insert new element only if it doesn't already exist
+        if (c.compareTo((Comparable)cur.item()) < 0) {
+          cur.insertBefore(c);
+        } 
+        // new element is greater than largest element
+        else if (c.compareTo((Comparable)cur.item()) > 0) {
+          cur.insertAfter(c);
+        }
+      } catch (InvalidNodeException ine) {
+        System.err.println("insert() failed.");
+        ine.printStackTrace(System.err);
+      }
+    }
   }
 
   /**
@@ -63,8 +87,38 @@ public class Set {
    *  DO NOT MODIFY THE SET s.
    *  DO NOT ATTEMPT TO COPY ELEMENTS; just copy _references_ to them.
    **/
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void union(Set s) {
-    // Your solution here.
+    if (s != null && s.cardinality() != 0) {
+      ListNode curNode = elements.front();
+      ListNode sNode = s.elements.front();
+      Comparable curItem, sItem;
+      
+      try {
+        while (curNode.isValidNode() && sNode.isValidNode()) {
+          curItem = (Comparable)curNode.item();
+          sItem = (Comparable)sNode.item();
+          if (curItem.compareTo(sItem) == 0) {
+            curNode = curNode.next();
+            sNode = sNode.next();
+          } else if (curItem.compareTo(sItem) < 0) {
+            curNode = curNode.next();
+          } else {
+            curNode.insertBefore(sItem);
+            sNode = sNode.next();
+          }
+        }
+        
+        while (sNode.isValidNode()) {
+          sItem = (Comparable)sNode.item();
+          elements.insertBack(sItem);
+          sNode = sNode.next();
+        }
+      } catch (InvalidNodeException ine) {
+        System.err.println("union() failed.");
+        ine.printStackTrace(System.err);
+      }
+    }
   }
 
   /**
@@ -80,8 +134,43 @@ public class Set {
    *  DO NOT CONSTRUCT ANY NEW NODES.
    *  DO NOT ATTEMPT TO COPY ELEMENTS.
    **/
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void intersect(Set s) {
-    // Your solution here.
+    // if s is null or this set is empty, don't touch this set
+    if (s != null && cardinality() != 0) {
+      ListNode curNode = elements.front();
+      ListNode sNode = s.elements.front();
+      Comparable curItem, sItem;
+      
+      try {
+        // while there are more elements in each set
+        while(curNode.next().isValidNode() && sNode.isValidNode()) {
+          curItem = (Comparable)curNode.item();
+          sItem = (Comparable)sNode.item();
+          // the same element appears in both sets, keep it in "this"
+          if (curItem.compareTo(sItem) == 0) {
+            curNode = curNode.next();
+            sNode = sNode.next();
+          // the element is in s but not this, so remove it
+          } else if (curItem.compareTo(sItem) < 0) {
+            curNode = curNode.next();
+            curNode.prev().remove();
+          // the element already isn't in this, so do nothing
+          } else {
+            sNode = sNode.next();
+          }
+        }
+        // remove all the rest of this set's nodes (not in s)
+        while (curNode.isValidNode()) {
+          ListNode temp = curNode.next();
+          curNode.remove();
+          curNode = temp;
+        }
+      } catch (InvalidNodeException ine) {
+        System.err.println("intersect() failed.");
+        ine.printStackTrace(System.err);
+      }
+    }
   }
 
   /**
@@ -100,8 +189,18 @@ public class Set {
    *            DEVIATIONS WILL LOSE POINTS.
    **/
   public String toString() {
-    // Replace the following line with your solution.
-    return "";
+    String s = "{  ";
+    ListNode cur = elements.front();
+    try {
+      while (cur.isValidNode()) {
+        s += cur.item() + "  ";
+        cur = cur.next();
+      }
+    } catch (InvalidNodeException ine) {
+      System.err.println("toString() failed.");
+      ine.printStackTrace(System.err);
+    } 
+    return s + "}";
   }
 
   public static void main(String[] argv) {
@@ -130,6 +229,23 @@ public class Set {
     System.out.println("After s.intersect(s3), s = " + s);
 
     System.out.println("s.cardinality() = " + s.cardinality());
-    // You may want to add more (ungraded) test code here.
+    
+    Set s4 = new Set();
+    s4.insert(new Integer(2));
+    s4.insert(new Integer(3));
+    System.out.println("Set s4 = " + s4);
+
+    Set s5 = new Set();
+    s5.insert(new Integer(1));
+    s5.insert(new Integer(2));
+    s5.insert(new Integer(3));
+    s5.insert(new Integer(4));
+    s5.insert(new Integer(5));
+    System.out.println("Set s5 = " + s5);
+    
+    s5.intersect(s4);
+    System.out.println("After s5.intersect(s4), s5 = " + s5);
+    
+    System.out.println("s5.cardinality() = " + s5.cardinality());
   }
 }

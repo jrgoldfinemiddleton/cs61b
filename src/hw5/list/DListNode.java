@@ -1,6 +1,5 @@
 /* DListNode.java */
-
-package list;
+package hw5.list;
 
 /**
  *  A DListNode is a mutable node in a DList (doubly-linked list).
@@ -93,11 +92,10 @@ public class DListNode extends ListNode {
     if (!isValidNode()) {
       throw new InvalidNodeException("insertAfter() called on invalid node");
     }
-    // Your solution here.  Will look something like your Homework 4 solution,
-    //   but changes are necessary.  For instance, there is no need to check if
-    //   "this" is null.  Remember that this node's "myList" field tells you
-    //   what DList it's in.  You should use myList.newNode() to create the
-    //   new node.
+    DListNode newNode = ((DList)myList).newNode(item, (DList)myList, this, this.next);
+    this.next = newNode;
+    newNode.next.prev = newNode;
+    myList.size++;
   }
 
   /**
@@ -113,11 +111,10 @@ public class DListNode extends ListNode {
     if (!isValidNode()) {
       throw new InvalidNodeException("insertBefore() called on invalid node");
     }
-    // Your solution here.  Will look something like your Homework 4 solution,
-    //   but changes are necessary.  For instance, there is no need to check if
-    //   "this" is null.  Remember that this node's "myList" field tells you
-    //   what DList it's in.  You should use myList.newNode() to create the
-    //   new node.
+    DListNode newNode = ((DList)myList).newNode(item, (DList)myList, this.prev, this);
+    this.prev = newNode;
+    newNode.prev.next = newNode;
+    myList.size++;
   }
 
   /**
@@ -132,12 +129,10 @@ public class DListNode extends ListNode {
     if (!isValidNode()) {
       throw new InvalidNodeException("remove() called on invalid node");
     }
-    // Your solution here.  Will look something like your Homework 4 solution,
-    //   but changes are necessary.  For instance, there is no need to check if
-    //   "this" is null.  Remember that this node's "myList" field tells you
-    //   what DList it's in.
-
-
+    next.prev = prev;
+    prev.next = next;
+    item = null;
+    myList.size--;
 
     // Make this node an invalid node, so it cannot be used to corrupt myList.
     myList = null;
@@ -145,5 +140,4 @@ public class DListNode extends ListNode {
     next = null;
     prev = null;
   }
-
 }

@@ -1,11 +1,11 @@
 /* InvalidNodeException.java */
-
-package list;
+package hw5.list;
 
 /**
  *  Implements an Exception that signals an attempt to use an invalid ListNode.
  */
 
+@SuppressWarnings("serial")
 public class InvalidNodeException extends Exception {
   protected InvalidNodeException() {
     super();
