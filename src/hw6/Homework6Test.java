@@ -1,6 +1,7 @@
 /* Homework6Test.java */
+package hw6;
 
-import dict.*;
+import hw6.dict.*;
 
 /**
  *  Initializes a hash table, then stocks it with random SimpleBoards.
@@ -16,9 +17,9 @@ public class Homework6Test {
     SimpleBoard board = new SimpleBoard();
     for (int y = 0; y < 8; y++) {
       for (int x = 0; x < 8; x++) {
-	double fval = Math.random() * 12;
-	int value = (int) fval;
-	board.setElementAt(x, y, value);
+        double fval = Math.random() * 12;
+        int value = (int) fval;
+        board.setElementAt(x, y, value);
       }
     }
     return board;
@@ -56,10 +57,12 @@ public class Homework6Test {
     HashTableChained table = new HashTableChained(numBoards);
     initTable(table, numBoards);
 
-    // To test your hash function, add a method to your HashTableChained class
-    // that counts the number of collisions--or better yet, also prints
-    // a histograph of the number of entries in each bucket.  Call this method
-    // from here.
+    table.printHistogram();
+    System.out.println("\nFor " + table.numBuckets() + " buckets and " +
+        numBoards + " boards, there were " +
+        table.numCollisions() + " collisions.");
+    System.out.println("The number of expected collisions was about " +
+        table.expectedCollisions() + ".");
   }
 
 }

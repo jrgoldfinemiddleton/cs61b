@@ -1,6 +1,5 @@
 /* Entry.java */
-
-package dict;
+package hw6.dict;
 
 /**
  *  A class for dictionary entries.

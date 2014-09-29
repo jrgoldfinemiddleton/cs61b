@@ -1,6 +1,7 @@
 /* HashTableChained.java */
+package hw6.dict;
 
-package dict;
+import hw6.list.*;
 
 /**
  *  HashTableChained implements a Dictionary as a hash table with chaining.
@@ -19,8 +20,9 @@ public class HashTableChained implements Dictionary {
   /**
    *  Place any data fields here.
    **/
-
-
+  protected List[] table;
+  // number of entries
+  protected int size = 0;
 
   /** 
    *  Construct a new empty hash table intended to hold roughly sizeEstimate
@@ -29,7 +31,10 @@ public class HashTableChained implements Dictionary {
    **/
 
   public HashTableChained(int sizeEstimate) {
-    // Your solution here.
+    table = new List[nextPrime(sizeEstimate)];
+    for (int i = 0; i < table.length; i++) {
+      table[i] = new DList();
+    }
   }
 
   /** 
@@ -38,7 +43,7 @@ public class HashTableChained implements Dictionary {
    **/
 
   public HashTableChained() {
-    // Your solution here.
+    this(100);
   }
 
   /**
@@ -50,8 +55,8 @@ public class HashTableChained implements Dictionary {
    **/
 
   int compFunction(int code) {
-    // Replace the following line with your solution.
-    return 88;
+    return (int) (Math.abs((7 * code + 13) * nextPrime(numBuckets() * 75))) %
+        numBuckets();
   }
 
   /** 
@@ -62,8 +67,14 @@ public class HashTableChained implements Dictionary {
    **/
 
   public int size() {
-    // Replace the following line with your solution.
-    return 0;
+    return size;
+  }
+  
+  /**
+   * Returns the number of buckets in the dictionary.
+   */
+  public int numBuckets() {
+    return table.length;
   }
 
   /** 
@@ -73,7 +84,11 @@ public class HashTableChained implements Dictionary {
    **/
 
   public boolean isEmpty() {
-    // Replace the following line with your solution.
+    for (int i = 0; i < size; i++) {
+      if (!table[i].isEmpty()) {
+        return false;
+      }
+    }
     return true;
   }
 
@@ -91,7 +106,16 @@ public class HashTableChained implements Dictionary {
    **/
 
   public Entry insert(Object key, Object value) {
-    // Replace the following line with your solution.
+    if (key != null) {
+      int n = compFunction(key.hashCode());
+      Entry e = new Entry();
+      e.key = key;
+      e.value = value;
+
+      table[n].insertBack(e);
+      size++;
+      return e;
+    }
     return null;
   }
 
@@ -108,7 +132,21 @@ public class HashTableChained implements Dictionary {
    **/
 
   public Entry find(Object key) {
-    // Replace the following line with your solution.
+    if (key != null) {
+      int n = compFunction(key.hashCode());
+      ListNode node = table[n].front();
+      try {
+        for (int i = 0; i < table[n].length(); i++) {
+          if (key.equals(((Entry)node.item()).key())) {
+            // found same key, return entry
+            return (Entry)node.item();
+          }
+          node = node.next();
+        }
+      } catch (InvalidNodeException ine) {
+      }
+      // key not found
+    }
     return null;
   }
 
@@ -126,7 +164,25 @@ public class HashTableChained implements Dictionary {
    */
 
   public Entry remove(Object key) {
-    // Replace the following line with your solution.
+    if (key != null) {
+      int n = compFunction(key.hashCode());
+      ListNode node = table[n].front();
+      try {
+        for (int i = 0; i < table[n].length(); i++) {
+          if (key.equals(((Entry)node.item()).key())) {
+            // found key, removing it
+            Entry e = (Entry)node.item();
+            node.remove();
+            size--;
+            // return removed entry
+            return e;
+          }
+          node = node.next();
+        }
+      } catch (InvalidNodeException ine) {
+      }
+      // key not found, not removing anything
+    }
     return null;
   }
 
@@ -134,7 +190,89 @@ public class HashTableChained implements Dictionary {
    *  Remove all entries from the dictionary.
    */
   public void makeEmpty() {
-    // Your solution here.
+    for (int i = 0; i < table.length; i++) {
+      table[i] = new DList();
+    }
+    size = 0;
   }
 
+  /**
+   * Return the number of expected collisions given keys selected
+   * randomly, where a collision is defined as any addition of a key
+   * to a bucket with at least one key already inside it.
+   */
+  public int expectedCollisions() {
+    int n = size;           // number of keys
+    int N = numBuckets();   // number of buckets
+    return (int) (n - N + N * Math.pow(1 - 1.0 / N, n));
+  }
+
+  /**
+   * Return the number of collisions in the table, where a collision is
+   * defined as any addition of a key to a bucket with at least one key
+   * already inside it.
+   */
+  public int numCollisions() {
+    int count = 0;
+    for (int i = 0; i < numBuckets(); i++) {
+      if (table[i].length() > 1) {
+        count+= table[i].length() - 1;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Print a histogram showing how many items are in each bucket
+   * as well as the number of buckets with 1-10 entries.
+   */
+  public void printHistogram() {
+    int[] count = new int[numBuckets()];
+
+    for (int i = 0; i < size; i++) {
+      count[table[i].length()]++;
+      System.out.println("Bucket " + i + ": " + table[i].length());
+    }
+
+    System.out.println();
+    for (int j = 1; j <= 10; j++) {
+      System.out.println("Number of buckets with " + j + " entries: " +
+          count[j]);
+    }
+  }
+
+  /**
+   * Private method that finds the next prime number greater than or
+   * equal to n.
+   * @param n the number to begin the search at
+   * @return the first prime found greater than or equal to n. Returns
+   * -1 if a prime is not found less than n + 200.
+   */
+  private static int nextPrime(int n) {
+    if (n <= 2) {
+      return 2;
+    }
+
+    boolean[] prime = new boolean[n + 200];
+    int i;
+    for (i = 2; i < n + 200; i++) {
+      prime[i] = true;
+    }
+
+    for (int divisor = 2; divisor * divisor < n + 200; divisor++) {
+      if (prime[divisor]) {
+        for (i = 2 * divisor; i < n + 200; i += divisor) {
+          prime[i] = false;
+        }
+      }
+    }
+
+    for (i = n; i < n + 200; i++) {
+      if (prime[i]) {
+        return i;
+      }
+    }
+
+    return -1; // this should not occur if n < 5 * 10^6
+  }
 }

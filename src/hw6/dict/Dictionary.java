@@ -1,6 +1,5 @@
 /* Dictionary.java */
-
-package dict;
+package hw6.dict;
 
 /**
  *  An interface for (unordered) dictionary ADTs.
