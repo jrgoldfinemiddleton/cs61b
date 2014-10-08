@@ -63,6 +63,7 @@ class Chip {
   
   /**
    * Returns a string representation of this chip.
+   * 
    * @return the string representing this chip.
    */
   @Override
