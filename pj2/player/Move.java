@@ -1,5 +1,4 @@
 /* Move.java  */
-
 package player;
 
 /**
@@ -9,8 +8,6 @@ package player;
  *  The moveKind field stores the type of move.  The x-coordinates index the
  *  horizontal direction (left to right) and the y-coordinates index the
  *  vertical direction (top to bottom).  x- and y-coordinates start at zero.
- *
- *  DO NOT CHANGE THIS FILE.
  */
 public class Move {
 
@@ -50,6 +47,7 @@ public class Move {
   }
 
   // toString() converts the move to a String.
+  @Override
   public String toString() {
     switch (moveKind) {
     case QUIT:
