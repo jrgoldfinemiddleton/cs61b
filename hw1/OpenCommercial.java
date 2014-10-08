@@ -1,6 +1,4 @@
 /* OpenCommercial.java */
-package hw1;
-
 import java.net.*;
 import java.io.*;
 

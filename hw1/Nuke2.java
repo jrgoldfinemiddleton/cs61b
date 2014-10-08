@@ -1,6 +1,4 @@
 /* Nuke2.java */
-package hw1;
-
 import java.io.*;
 
 /* A class that provides a main method to read a string from the
