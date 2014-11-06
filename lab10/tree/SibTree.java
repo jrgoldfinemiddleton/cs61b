@@ -66,6 +66,7 @@ public class SibTree extends Tree {
    *  root() returns the root node, if one exists.  Returns an invalid node if
    *  the tree is empty.
    */
+  @Override
   public TreeNode root() {
     if (root == null) {
       return new SibTreeNode();
@@ -78,6 +79,7 @@ public class SibTree extends Tree {
    *  insertRoot() inserts a node containing "item" at the root of the tree.
    *  If a root already exists, it becomes a child of the new node.
    */
+  @Override
   public void insertRoot(Object item) {
     SibTreeNode newRoot = new SibTreeNode(this, item);
     newRoot.firstChild = root;
@@ -91,6 +93,7 @@ public class SibTree extends Tree {
   /**
    * toString() returns a string representation of the SibTree.
    */
+  @Override
   public String toString() {
     return preorderString(root, 0);
   }

@@ -57,6 +57,7 @@ class SibTreeNode extends TreeNode {
    *  children() returns the number of children of the node at this position.
    *  WARNING:  Does not run in constant time.  Actually counts the kids.
    */
+  @Override
   public int children() {
     if (isValidNode()) {
       int count = 0;
@@ -76,9 +77,15 @@ class SibTreeNode extends TreeNode {
    *  exception if `this' is not a valid node.  Returns an invalid TreeNode if
    *  this node is the root.
    */
+  @Override
   public TreeNode parent() throws InvalidNodeException {
-    // REPLACE THE FOLLOWING LINE WITH YOUR SOLUTION TO PART I.
-    return null;
+    if (isValidNode()) {
+      if (parent == null) {
+        return new SibTreeNode();
+      }
+      return parent;
+    }
+    throw new InvalidNodeException();
   }
 
   /**
@@ -86,6 +93,7 @@ class SibTreeNode extends TreeNode {
    *  `this' is not a valid node.  Returns an invalid TreeNode if there is no
    *  cth child.
    */
+  @Override
   public TreeNode child(int c) throws InvalidNodeException {
     if (isValidNode()) {
       if (c < 1) {
@@ -111,6 +119,7 @@ class SibTreeNode extends TreeNode {
    *  TreeNode.  Throws an exception if `this' is not a valid node.  Returns
    *  an invalid TreeNode if there is no sibling to the right of this node.
    */
+  @Override
   public TreeNode nextSibling() throws InvalidNodeException {
     if (isValidNode()) {
       if (nextSibling == null) {
@@ -131,8 +140,30 @@ class SibTreeNode extends TreeNode {
    *
    *  Throws an InvalidNodeException if "this" node is invalid.
    */
+  @Override
   public void insertChild(Object item, int c) throws InvalidNodeException {
-    // FILL IN YOUR SOLUTION TO PART II HERE.
+    if (!isValidNode()) {
+      throw new InvalidNodeException();
+    }
+    if (c < 1) {
+      c = 1;
+    }
+    SibTreeNode cur = firstChild;
+    SibTreeNode newChild = new SibTreeNode(myTree, item);
+    newChild.parent = this;
+    if (c == 1 || firstChild == null) {
+      newChild.nextSibling = firstChild;
+      firstChild = newChild;
+      myTree.size++;
+      return;
+    }
+    int index = 1;
+    while (index < c - 1 && cur.nextSibling != null) {
+      cur = cur.nextSibling;
+    }
+    newChild.nextSibling = cur.nextSibling;
+    cur.nextSibling = newChild;
+    myTree.size++;
   }
 
   /**
@@ -141,7 +172,37 @@ class SibTreeNode extends TreeNode {
    *  an exception if `this' is not a valid node.  If 'this' has siblings to
    *  its right, those siblings are all shifted left by one.
    */
+  @Override
   public void removeLeaf() throws InvalidNodeException {
+    if (!isValidNode()) {
+      throw new InvalidNodeException();
+    }
+    if (firstChild == null) {
+      // check to see if this node is root
+      if (parent == null) {
+        valid = false;
+        myTree.size--;
+        myTree.root = null;
+        return;
+      }
+      SibTreeNode cur = parent.firstChild;
+      if (cur == this) {
+        valid = false;
+        if (nextSibling != null) {
+          parent.firstChild = nextSibling;
+        } else {
+          parent.firstChild = null;
+        }
+        myTree.size--;
+      } else {
+        while (cur.nextSibling != this) {
+          cur = cur.nextSibling;
+        }
+        cur.nextSibling = this.nextSibling;
+        valid = false;
+        myTree.size--;
+      }
+    }
     // FILL IN YOUR SOLUTION TO PART III HERE.
   }
 
