@@ -7,4 +7,3 @@
 
 # ignore binary files
 bin/
-*.class
