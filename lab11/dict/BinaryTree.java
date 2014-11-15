@@ -30,6 +30,7 @@ public class BinaryTree implements Dictionary {
   /**
    *  makeEmpty() removes all the entries from the dictionary.
    */
+  @Override
   public void makeEmpty() {
     size = 0;
     root = null;
@@ -40,6 +41,7 @@ public class BinaryTree implements Dictionary {
    *
    *  @return the number of entries stored in the dictionary.
    **/
+  @Override
   public int size() {
     return size;
   }
@@ -49,6 +51,7 @@ public class BinaryTree implements Dictionary {
    *
    *  @return true if the dictionary has no entries; false otherwise.
    **/
+  @Override
   public boolean isEmpty() {
     return size == 0;
   }
@@ -64,6 +67,8 @@ public class BinaryTree implements Dictionary {
    *  @param value an arbitrary object associated with the key.
    *  @return an Entry object referencing the key and value.
    **/
+  @SuppressWarnings("rawtypes")
+  @Override
   public Entry insert(Object key, Object value) {
     Entry entry = new Entry(key, value);
     if (root == null) {
@@ -85,18 +90,19 @@ public class BinaryTree implements Dictionary {
    *  @param node the root of a subtree in which the new entry will be
    *         inserted.
    **/
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   private void insertHelper(Entry entry, Comparable key, BinaryTreeNode node) {
     if (key.compareTo(node.entry.key()) <= 0) {
       if (node.leftChild == null) {
-	node.leftChild = new BinaryTreeNode(entry, node);
+        node.leftChild = new BinaryTreeNode(entry, node);
       } else {
-	insertHelper(entry, key, node.leftChild);
+        insertHelper(entry, key, node.leftChild);
       }
     } else {
       if (node.rightChild == null) {
-	node.rightChild = new BinaryTreeNode(entry, node);
+        node.rightChild = new BinaryTreeNode(entry, node);
       } else {
-	insertHelper(entry, key, node.rightChild);
+        insertHelper(entry, key, node.rightChild);
       }
     }
   }
@@ -112,6 +118,8 @@ public class BinaryTree implements Dictionary {
    *  @return an Entry referencing the key and an associated value, or null if
    *          no entry contains the specified key.
    **/
+  @SuppressWarnings("rawtypes")
+  @Override
   public Entry find(Object key) {
     BinaryTreeNode node = findHelper((Comparable) key, root);
     if (node == null) {
@@ -129,9 +137,27 @@ public class BinaryTree implements Dictionary {
    *  Be sure this method returns null if node == null.
    **/
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private BinaryTreeNode findHelper(Comparable key, BinaryTreeNode node) {
-    // Replace the following line with your solution.
-    return null;
+    if (node == null) {
+      return null;
+    }
+    if (key.compareTo(node.entry.key()) == 0) {
+      return node;
+    }
+    if (key.compareTo(node.entry.key()) < 0) {
+      if (node.leftChild == null) {
+        return null;
+      } else {
+        return findHelper(key, node.leftChild);
+      }
+    } else {
+      if (node.rightChild == null) {
+        return null;
+      } else {
+        return findHelper(key, node.rightChild);
+      }
+    }
   }
 
   /** 
@@ -145,15 +171,94 @@ public class BinaryTree implements Dictionary {
    *  @return an Entry referencing the key and an associated value, or null if
    *          no entry contains the specified key.
    **/
+  @SuppressWarnings("rawtypes")
+  @Override
   public Entry remove(Object key) {
-    // Replace the following line with your solution.
-    return null;
+    if (root == null) {
+      return null;
+    }
+    BinaryTreeNode n = findHelper((Comparable) key, root);
+    if (n == null) {
+      return null;
+    }
+    Entry entry = n.entry;
+    if (n.leftChild == null && n.rightChild == null) {
+      if (n == root) {
+        root = null;
+      } else {
+        if (n == n.parent.leftChild) {
+          n.parent.leftChild = null;
+        } else {
+          n.parent.rightChild = null;
+        }
+      }
+    } else if (n.leftChild == null) {
+      if (n == root) {
+        root = n.rightChild;
+        root.parent = null;
+      } else {
+        n.rightChild.parent = n.parent;
+        if (n == n.parent.leftChild) {
+          n.parent.leftChild = n.rightChild;
+        } else {
+          n.parent.rightChild = n.rightChild;
+        }
+      }
+    } else if (n.rightChild == null) {
+      if (n == root) {
+        root = n.leftChild;
+        root.parent = null;
+      } else {
+        n.leftChild.parent = n.parent;
+        if (n == n.parent.leftChild) {
+          n.parent.leftChild = n.leftChild;
+        } else {
+          n.parent.rightChild = n.leftChild;
+        }
+      }
+    } else { // has two children
+      BinaryTreeNode old = n;
+      // let n be the least greater key than the one in old
+      n = n.rightChild;
+      while (n.leftChild != null) {
+        n = n.leftChild;
+      }
+      n.leftChild = old.leftChild;
+      if (n != old.rightChild) { // if n is a left child
+        // give n's old child to n's parent (which would now have no left child)
+        n.parent.leftChild = n.rightChild;
+        if (n.rightChild != null) {
+          n.rightChild.parent = n.parent;
+        }
+        // give n the removed node's right child
+        n.rightChild = old.rightChild;
+      }
+      // the left child of the removed node has a new parent
+      old.leftChild.parent = n;
+      // the right child of the removed node has a new parent
+      old.rightChild.parent = n;
+      // n takes over for old node
+      n.parent = old.parent;
+
+      if (old == root) {
+        root = n;
+      } else { // let n be the child of old's parent
+        if (old == old.parent.leftChild) {
+          old.parent.leftChild = n;
+        } else {
+          old.parent.rightChild = n;
+        }
+      }
+    }
+    size--;
+    return entry;
   }
 
   /**
    *  Convert the tree into a string.
    **/
 
+  @Override
   public String toString() {
     if (root == null) {
       return "";
@@ -204,6 +309,59 @@ public class BinaryTree implements Dictionary {
     if (tree.size() != 4) {
       System.out.println("  SHOULD BE 4.");
     }
+    
+    System.out.println("\nAdditional test code:");
+    
+    tree = new BinaryTree();
+    tree.insert(new Integer(5), "A");
+    tree.insert(new Integer(6), "V");
+    tree.insert(new Integer(7), "K");
+    tree.insert(new Integer(4), "Z");
+    tree.insert(new Integer(3), "L");
+    tree.insert(new Integer(4), "X");
+    tree.insert(new Integer(5), "E");
+    tree.insert(new Integer(10), "Y");
+    tree.insert(new Integer(11), "T");
+    tree.insert(new Integer(8), "R");
+    tree.insert(new Integer(9), "S");
+
+    
+    System.out.println("\nTree 2");
+    System.out.println(tree);
+    System.out.println("Tree after removing 1");
+    tree.remove(1);
+    System.out.println(tree);
+    System.out.println("Tree after removing 5");
+    tree.remove(5);
+    System.out.println(tree);
+    System.out.println("Tree after removing 8");
+    tree.remove(8);
+    System.out.println(tree);
+    System.out.println("Tree after removing 9");
+    tree.remove(9);
+    System.out.println(tree);
+    System.out.println("Tree after removing 4");
+    tree.remove(4);
+    System.out.println(tree);
+    System.out.println("Tree after removing 3");
+    tree.remove(3);
+    System.out.println(tree);
+
+    tree = new BinaryTree();
+    tree.insert(new Integer(10), "A");
+    tree.insert(new Integer(7), "V");
+    tree.insert(new Integer(13), "C");
+    tree.insert(new Integer(15), "K");
+    tree.insert(new Integer(12), "Z");
+    tree.insert(new Integer(14), "L");
+    tree.insert(new Integer(17), "X");
+    
+    System.out.println("\nTree 3");
+    System.out.println(tree);
+    System.out.println("Tree after removing 13");
+    tree.remove(13);
+    System.out.println(tree); 
+    
   }
 
   private void testRemove(int n, String shouldBe) {
@@ -236,5 +394,5 @@ public class BinaryTree implements Dictionary {
       }
     }
   }
-  
+
 }
