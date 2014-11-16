@@ -47,18 +47,16 @@ public class ListSorts {
       while (!q1.isEmpty() && !q2.isEmpty()) {
         Comparable item1 = (Comparable) q1.front();
         Comparable item2 = (Comparable) q2.front();
-        if (item1.compareTo(item2) <= 0) { // <= makes a stable sort
+        if (item1.compareTo(item2) <= 0) { 
           q.enqueue(q1.dequeue());
         } else {
           q.enqueue(q2.dequeue());
         }
       }
-      // only one of the following two loops will execute
-      while (!q1.isEmpty()) {
-        q.enqueue(q1.dequeue());
-      }
-      while (!q2.isEmpty()) {
-        q.enqueue(q2.dequeue());
+      if (q2.isEmpty()) {
+        q.append(q1);
+      } else {
+        q.append(q2);
       }
     } catch (QueueEmptyException uf) {
       System.err.println("Error:  attempt to dequeue from empty queue.");
@@ -108,22 +106,13 @@ public class ListSorts {
       return;
     }
     LinkedQueue queues = makeQueueOfQueues(q);
-    LinkedQueue queuesTemp = new LinkedQueue();
     try {
       while (queues.size() > 1) {
-        while (queues.size() > 1) {
           LinkedQueue q1 = (LinkedQueue) queues.dequeue();
           LinkedQueue q2 = (LinkedQueue) queues.dequeue();
           LinkedQueue comb = mergeSortedQueues(q1, q2);
-          queuesTemp.enqueue(comb);
+          queues.enqueue(comb);
         }
-        // if there was an odd number of queues in q, put the extra one in the temp
-        if (!queues.isEmpty()) {
-          queuesTemp.enqueue(queues.dequeue());
-        }
-        queues = queuesTemp;
-        queuesTemp = new LinkedQueue();
-      }
       queues = (LinkedQueue) queues.dequeue();
       q.append(queues);
     } catch (QueueEmptyException uf) {
