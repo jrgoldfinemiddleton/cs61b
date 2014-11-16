@@ -41,6 +41,20 @@ public class DisjointSets {
    *  @param root2 the root of the other set.
    **/
   public void union(int root1, int root2) {
+    // error-checking code
+    if (array[root1] >= 0) {
+      System.out.println("root1 (" + root1 + ") is not a root.  Not uniting.");
+      return;
+    }
+    if (array[root2] >= 0) {
+      System.out.println("root2 (" + root2 + ") is not a root.  Not uniting.");
+      return;
+    }
+    if (root1 == root2) {
+      System.out.println("root1 = root2.  Not uniting.");
+      return;
+    }
+    
     if (array[root2] < array[root1]) {                 // root2 has larger tree
       array[root2] += array[root1];        // update # of items in root2's tree
       array[root1] = root2;                              // make root2 new root

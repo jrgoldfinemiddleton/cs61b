@@ -17,7 +17,7 @@ public class Maze {
   protected boolean[][] hWalls;
   protected boolean[][] vWalls;
 
-  // Object for generting random numbers.
+  // Object for generating random numbers.
   private static Random random;
 
   // Constants used in depth-first search (which checks for cycles in the
@@ -64,27 +64,78 @@ public class Maze {
         }
       }
     }
-
-
-
-    /**
-     * Fill in the rest of this method.  You should go through all the walls of
-     * the maze in random order, and remove any wall whose removal will not
-     * create a cycle.  Use the implementation of disjoint sets provided in the
-     * set package to avoid creating any cycles.
-     *
-     * Note the method randInt() further below, which generates a random
-     * integer.  randInt() generates different numbers every time the program
-     * is run, so that you can make lots of different mazes.
-     **/
-
-
-
+    
+    // Create array of all interior walls and randomize them.
+    int numWalls = (horiz - 1) * vert + horiz * (vert - 1);
+    int[][] allWalls = new int[numWalls][];
+    if (horiz > 1 && vert > 1) {
+      int index = 0;
+      // add horizontal walls
+      for (j = 0; j < vert - 1; j++) {
+        for (i = 0; i < horiz; i++) {
+          // first two elements are coordinates
+          // third element represents hWall with '0'
+          allWalls[index] = new int[]{i, j, 0};
+          index++;
+        }
+      }
+      // add vertical walls
+      for (i = 0; i < horiz - 1; i++) {
+        for (j = 0; j < vert; j++) {
+          // first two elements are coordinates
+          // third element represents vWall with '1'
+          allWalls[index] = new int[]{i, j, 1};
+          index++;
+        }
+      }
+      // shuffle them
+      int w = allWalls.length;
+      while (w > 1) { // no need to shuffle the last (index 0) element
+        int x = randInt(w);
+        int[] temp = allWalls[x];
+        allWalls[x] = allWalls[w - 1];
+        allWalls[w - 1] = temp;
+        w--;
+      }
+      
+      // create array of all cells
+      // each cell (i,j) is located at index (j * horiz + i)
+      DisjointSets cells = new DisjointSets(horiz * vert);
+      
+      // remove some of the walls to create the maze
+      for (int[] cur: allWalls) {
+        int[] cell1;
+        int[] cell2;
+        boolean isHWall = cur[2] == 0;
+        if (isHWall) { // horizontal wall
+          cell1 = new int[]{cur[0], cur[1]};
+          cell2 = new int[]{cur[0], cur[1] + 1};
+        } else { // vertical wall
+          cell1 = new int[]{cur[0], cur[1]};
+          cell2 = new int[]{cur[0] + 1, cur[1]};
+        }
+        // check whether the two cells are in the same set
+        int cell1pos = cell1[1] * horiz + cell1[0];
+        int cell2pos = cell2[1] * horiz + cell2[0];
+        int cell1set = cells.find(cell1pos);
+        int cell2set = cells.find(cell2pos);
+        if (cell1set != cell2set) {
+          if (isHWall) {
+            hWalls[cur[0]][cur[1]] = false;
+          } else {
+            vWalls[cur[0]][cur[1]] = false;
+          }
+          cells.union(cell1set, cell2set);
+        }
+            
+      }
+    }
   }
 
   /**
    *  toString() returns a string representation of the maze.
    **/
+  @Override
   public String toString() {
     int i, j;
     String s = "";
