@@ -196,8 +196,6 @@ public class SplayTree implements Dictionary {
    *  @param node the node to splay to the root.
    **/
   private void splayNode(BinaryTreeNode node) {
-    // When you do Part II of the lab, please replace the following faulty code
-    // with your solution.
     while (node.parent != null) {
       BinaryTreeNode parent = node.parent;
       BinaryTreeNode gparent = node.parent.parent;
