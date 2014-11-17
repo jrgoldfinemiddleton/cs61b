@@ -31,6 +31,7 @@ public class SplayTree implements Dictionary {
   /**
    *  makeEmpty() removes all the entries from the dictionary.
    */
+  @Override
   public void makeEmpty() {
     size = 0;
     root = null;
@@ -41,6 +42,7 @@ public class SplayTree implements Dictionary {
    *
    *  @return the number of entries stored in the dictionary.
    **/
+  @Override
   public int size() {
     return size;
   }
@@ -50,6 +52,7 @@ public class SplayTree implements Dictionary {
    *
    *  @return true if the dictionary has no entries; false otherwise.
    **/
+  @Override
   public boolean isEmpty() {
     return size == 0;
   }
@@ -177,7 +180,13 @@ public class SplayTree implements Dictionary {
    *  @param node the node to splay two steps up the tree.
    **/
   private void zigZig(BinaryTreeNode node) {
-    // Write your solution to Part I of the lab here.
+    if (node == node.parent.leftChild) {
+      rotateRight(node.parent);
+      rotateRight(node); 
+    } else {
+      rotateLeft(node.parent);
+      rotateLeft(node); 
+    }
   }
 
   /**
@@ -190,7 +199,23 @@ public class SplayTree implements Dictionary {
     // When you do Part II of the lab, please replace the following faulty code
     // with your solution.
     while (node.parent != null) {
-      zig(node);
+      BinaryTreeNode parent = node.parent;
+      BinaryTreeNode gparent = node.parent.parent;
+      if (parent == root) {
+        zig(node);
+      } else if (parent == gparent.leftChild) {
+        if (node == parent.leftChild) {
+          zigZig(node);
+        } else {
+          zigZag(node);
+        }
+      } else {
+        if (node == parent.leftChild) {
+          zigZag(node);
+        } else {
+          zigZig(node);
+        }
+      }
     }
     // The following line isn't really necessary, as the rotations update the
     // root correctly if splayNode() successfully splays "node" to the root,
@@ -209,6 +234,8 @@ public class SplayTree implements Dictionary {
    *  @param value an arbitrary object associated with the key.
    *  @return an Entry object referencing the key and value.
    **/
+  @SuppressWarnings("rawtypes")
+  @Override
   public Entry insert(Object key, Object value) {
     Entry entry = new Entry(key, value);
     if (root == null) {
@@ -230,20 +257,21 @@ public class SplayTree implements Dictionary {
    *  @param node the root of a subtree in which the new entry will be
    *         inserted.
    **/
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   private void insertHelper(Entry entry, Comparable key, BinaryTreeNode node) {
     if (key.compareTo(node.entry.key()) <= 0) {
       if (node.leftChild == null) {
-	node.leftChild = new BinaryTreeNode(entry, node);
+        node.leftChild = new BinaryTreeNode(entry, node);
         splayNode(node.leftChild);
       } else {
-	insertHelper(entry, key, node.leftChild);
+        insertHelper(entry, key, node.leftChild);
       }
     } else {
       if (node.rightChild == null) {
-	node.rightChild = new BinaryTreeNode(entry, node);
+        node.rightChild = new BinaryTreeNode(entry, node);
         splayNode(node.rightChild);
       } else {
-	insertHelper(entry, key, node.rightChild);
+        insertHelper(entry, key, node.rightChild);
       }
     }
   }
@@ -259,6 +287,8 @@ public class SplayTree implements Dictionary {
    *  @return an Entry referencing the key and an associated value, or null if
    *          no entry contains the specified key.
    **/
+  @SuppressWarnings("rawtypes")
+  @Override
   public Entry find(Object key) {
     BinaryTreeNode node = findHelper((Comparable) key, root);
     if (node == null) {
@@ -276,6 +306,7 @@ public class SplayTree implements Dictionary {
    *  Be sure this method returns null if node == null.
    **/
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private BinaryTreeNode findHelper(Comparable key, BinaryTreeNode node) {
     if (node == null) {
       return null;
@@ -310,6 +341,7 @@ public class SplayTree implements Dictionary {
    *  @return an Entry referencing the key and an associated value, or null if
    *          no entry contains the specified key.
    **/
+  @Override
   public Entry remove(Object key) {
     //  Not implemented.
     return null;
@@ -319,6 +351,7 @@ public class SplayTree implements Dictionary {
    *  Convert the tree into a string.
    **/
 
+  @Override
   public String toString() {
     if (root == null) {
       return "";
@@ -345,6 +378,7 @@ public class SplayTree implements Dictionary {
    *
    * DO NOT CHANGE THE FOLLOWING TEST CODE!
    **/
+  @SuppressWarnings("rawtypes")
   public static void main(String[] args) {
     SplayTree tree = new SplayTree();
 
@@ -356,7 +390,7 @@ public class SplayTree implements Dictionary {
     tree.insert(new Integer(3), "O");
     Entry testEntry = tree.insert(new Integer(2), "O");
     BinaryTreeNode testNode =
-      tree.findHelper((Comparable) testEntry.key, tree.root);
+        tree.findHelper((Comparable) testEntry.key, tree.root);
     tree.insert(new Integer(5), "J");
     tree.insert(new Integer(4), "D");
     tree.insert(new Integer(7), "B");
@@ -371,9 +405,9 @@ public class SplayTree implements Dictionary {
       System.out.println("Tree 1 is now:  " + tree);
       shouldBe = "(1G)2O((3O)4D((5J)6O(7B)))";
       if (tree.toString().equals(shouldBe)) {
-	System.out.println("  Zig-zig successful.");
+        System.out.println("  Zig-zig successful.");
       } else {
-	System.out.println("  ERROR:  SHOULD BE " + shouldBe);
+        System.out.println("  ERROR:  SHOULD BE " + shouldBe);
       }
       System.out.println("\nAttempting to balance an unbalanced tree using only zig():");
       SplayTree unbalanced = new SplayTree();
@@ -382,16 +416,16 @@ public class SplayTree implements Dictionary {
       System.out.println("tree is:  " + unbalanced);
       shouldBe = "1J(2I(3H(4G(5F(6E(7D(8C(9B(10A)))))))))";
       if (!unbalanced.toString().equals(shouldBe)) {
-	System.out.println("  ERROR:  SHOULD BE " + shouldBe);
+        System.out.println("  ERROR:  SHOULD BE " + shouldBe);
       }
       unbalanced.testFind(10, "A");
       System.out.println("Tree 1 is now:  " + unbalanced);
       shouldBe = "(1J(2I(3H(4G(5F(6E(7D(8C(9B)))))))))10A";
       if (!unbalanced.toString().equals(shouldBe)) {
-	System.out.println("  ERROR:  SHOULD BE " + shouldBe);
+        System.out.println("  ERROR:  SHOULD BE " + shouldBe);
       } else {
         System.out.println("As you can see, the tree is still unbalanced.\n" +
-                           "If there are no errors, go on to Part II.");
+            "If there are no errors, go on to Part II.");
       }
     } else {
       System.out.println("ERROR:  splayNode() is returning incorrect results.");
