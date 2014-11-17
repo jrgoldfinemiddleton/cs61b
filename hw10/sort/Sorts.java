@@ -162,44 +162,12 @@ public class Sorts {
         Integer.parseInt("40013879", 16) };
     
     System.out.println("keys2:");
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 0");
-    int[] keys2out = countingSort(keys2, 0);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 1");
-    keys2out = countingSort(keys2, 1);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 2");
-    keys2out = countingSort(keys2, 2);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 3");
-    keys2out = countingSort(keys2, 3);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 4");
-    keys2out = countingSort(keys2, 4);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 5");
-    keys2out = countingSort(keys2, 5);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 6");
-    keys2out = countingSort(keys2, 6);
-    yell(keys2out);
-    System.out.println();
-    yell(keys2);
-    System.out.println("keys2 sorted by digit 7");
-    keys2out = countingSort(keys2, 7);
-    yell(keys2out);
+    for (int i = 0; i < 8; i++) {
+      yell(keys2);
+      System.out.println("keys2 sorted by digit " + i);
+      int[] keys2out = countingSort(keys2, i);
+      yell(keys2out);
+      System.out.println();
+    }
   }
 }
