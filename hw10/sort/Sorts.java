@@ -7,6 +7,8 @@ public class Sorts {
   /**
    *  Place any final static fields you would like to have here.
    **/
+  private final static int BASE = 16;
+  private final static int BITMASK = BASE - 1;
 
 
   /**
@@ -25,8 +27,44 @@ public class Sorts {
    *    Note:  Return a _newly_ created array.  DO NOT CHANGE THE ARRAY keys.
    **/
   public static int[] countingSort(int[] keys, int whichDigit) {
-    // Replace the following line with your solution.
-    return null;
+    if (keys == null) {
+      return null;
+    }
+    if (keys.length == 0) {
+      return new int[]{};
+    }
+    if (keys.length == 1) {
+      return new int[]{keys[0]};
+    }
+
+    // glad we got that out of the way
+    int[] counts = new int[BASE];
+    int[] masked = new int[keys.length];
+    int[] out = new int[keys.length];
+    for (int i = 0; i < keys.length; i++) {
+      int cur = keys[i];
+      int digit = whichDigit;
+      while (digit > 0) {
+        cur >>= 4;
+        digit--;
+      }
+      counts[cur & BITMASK]++;
+      masked[i] = cur & BITMASK;
+    }
+    
+    int total = 0;
+    for (int i = 0; i < counts.length; i++) {
+      int c = counts[i];
+      counts[i] = total;
+      total += c;
+    }
+    
+    for (int i = 0; i < keys.length; i++) {
+      out[counts[masked[i]]] = keys[i];
+      counts[masked[i]]++;
+    }
+    
+    return out;
   }
 
   /**
@@ -39,8 +77,16 @@ public class Sorts {
    *    Note:  Return a _newly_ created array.  DO NOT CHANGE THE ARRAY keys.
    **/
   public static int[] radixSort(int[] keys) {
-    // Replace the following line with your solution.
-    return null;
+    if (keys == null) {
+      return null;
+    }
+    int[] sorted = new int[keys.length];
+    System.arraycopy(keys, 0, sorted, 0, keys.length);
+    int digit = 0;
+    while (digit < 8) {
+      sorted = countingSort(sorted, digit++);
+    }
+    return sorted;
   }
 
   /**
@@ -85,6 +131,75 @@ public class Sorts {
     yell(keys);
     keys = radixSort(keys);
     yell(keys);
-  }
 
+    // extra test code
+
+    String hex = "34a2";
+    int toShift = Integer.parseInt(hex, BASE);
+    String shifted = Integer.toHexString(toShift >> 4);
+    String masked = Integer.toHexString((toShift >> 4) & BITMASK);
+    System.out.println("\n" + hex + " shifted 4 bits right is: " + shifted);
+    System.out.println("after masking, it is: " + masked + "\n");
+
+    int[] keys2 = { Integer.parseInt("60013879", 16),
+        Integer.parseInt("11111119", 16),
+        Integer.parseInt("2c735010", 16),
+        Integer.parseInt("2c732010", 16),
+        Integer.parseInt("7fffffff", 16),
+        Integer.parseInt("4001387c", 16),
+        Integer.parseInt("10111119", 16),
+        Integer.parseInt("529a7385", 16),
+        Integer.parseInt("1e635010", 16),
+        Integer.parseInt("28905879", 16),
+        Integer.parseInt("00011119", 16),
+        Integer.parseInt("00000000", 16),
+        Integer.parseInt("7c725010", 16),
+        Integer.parseInt("1e630010", 16),
+        Integer.parseInt("111111e5", 16),
+        Integer.parseInt("61feed0c", 16),
+        Integer.parseInt("3bba7387", 16),
+        Integer.parseInt("52953fdb", 16),
+        Integer.parseInt("40013879", 16) };
+    
+    System.out.println("keys2:");
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 0");
+    int[] keys2out = countingSort(keys2, 0);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 1");
+    keys2out = countingSort(keys2, 1);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 2");
+    keys2out = countingSort(keys2, 2);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 3");
+    keys2out = countingSort(keys2, 3);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 4");
+    keys2out = countingSort(keys2, 4);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 5");
+    keys2out = countingSort(keys2, 5);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 6");
+    keys2out = countingSort(keys2, 6);
+    yell(keys2out);
+    System.out.println();
+    yell(keys2);
+    System.out.println("keys2 sorted by digit 7");
+    keys2out = countingSort(keys2, 7);
+    yell(keys2out);
+  }
 }
